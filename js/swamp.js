@@ -152,7 +152,7 @@
       var bodyH = (s.guest.frog && BODY_BOTTOM[f.id]) || f.h;
       var k = Math.min(w * 0.62, FW * FROG_SIZE, h * 0.95 * f.w / bodyH) / f.w;
       var frogH = bodyH * k;
-      var REST = s.hill.seat === 1 ? 0.46 : 0.12;
+      var REST = 0.12;
       g.style.width = (b.W * k) + 'px';
       g.style.height = (b.H * k) + 'px';
       g.style.left = (w * (s.hill.frogX || 0.5) - (f.ax - b.left) * k) + 'px';
@@ -195,7 +195,6 @@
     HILLS.forEach(function (hill) {
       var spot = document.createElement('a');
       spot.className = 'swamp__spot' + (hill.seat ? ' swamp__spot--seat' : '');
-      if (hill.seat === 1) spot.classList.add('swamp__spot--center');
       var flowers = hill.flowers || [];
       var flowerImg = function (f, i) {
         return '<img class="swamp__flower' + (f[3] == null ? '' : ' swamp__flower--side') + '" data-i="' + i + '" src="' + flowerSrc(f[0]) + '" alt="" draggable="false">';
@@ -318,7 +317,7 @@
     if (s === hovered) return;
     if (hovered) hovered.el.classList.remove('is-up');
     hovered = s;
-    if (s && s.hill.seat !== 1) s.el.classList.add('is-up');
+    if (s) s.el.classList.add('is-up');
   }
   field.addEventListener('click', function (e) {
     var spot = e.target.closest('.swamp__spot');
@@ -345,7 +344,7 @@
   function peek() {
     if (!running) return;
     var visible = spots.filter(function (s) {
-      return s.guest && s.hill.seat !== 1 && !s.el.classList.contains('is-up') && !s.el.classList.contains('is-gone');
+      return s.guest && !s.el.classList.contains('is-up') && !s.el.classList.contains('is-gone');
     });
     if (visible.length) {
       var s = visible[Math.floor(Math.random() * visible.length)];

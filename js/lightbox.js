@@ -16,6 +16,7 @@
     '<button class="lightbox__close" type="button" aria-label="Закрыть"></button>' +
     '<button class="arrow arrow--prev lightbox__prev" type="button" aria-label="Предыдущее фото"></button>' +
     '<button class="arrow lightbox__next" type="button" aria-label="Следующее фото"></button>' +
+    '<p class="lightbox__status" role="status" hidden></p>' +
     '<div class="lightbox__count"></div>' +
     '<div class="lightbox__bar" hidden><span class="lightbox__caption"></span><button class="btn lightbox__pick" type="button"></button></div>';
   document.body.appendChild(box);
@@ -25,6 +26,7 @@
   var prev = box.querySelector('.lightbox__prev');
   var next = box.querySelector('.lightbox__next');
   var count = box.querySelector('.lightbox__count');
+  var status = box.querySelector('.lightbox__status');
   var closeBtn = box.querySelector('.lightbox__close');
   var bar = box.querySelector('.lightbox__bar');
   var caption = box.querySelector('.lightbox__caption');
@@ -32,6 +34,10 @@
   var opts = {};
   var list = [];
   var index = 0;
+  var requested = 0;
+  var requestVersion = 0;
+  var adjacent = {};
+  var ownsHistory = false;
   var lastFocus = null;
   var touch = null;
   var pinchScale = 1;
@@ -50,34 +56,64 @@
     img.style.transformOrigin = x + '% ' + y + '%';
   }
 
-  function show(i) {
+  function loadPhoto(i, priority) {
+    var photo = adjacent[i] || new Image();
+    photo.fetchPriority = priority;
+    if (!photo.hasAttribute('src')) photo.src = list[i];
+    return photo;
+  }
+  function preloadNeighbors() {
+    adjacent = {};
+    if (list.length < 2) return;
+    [-1, 1].forEach(function (direction) {
+      var i = (index + direction + list.length) % list.length;
+      if (!/\.mp4$/i.test(list[i]) && !adjacent[i]) adjacent[i] = loadPhoto(i, 'low');
+    });
+  }
+  function show(i, direction) {
+    requested = (i + list.length) % list.length;
+    var target = requested;
+    var version = ++requestVersion;
+    var source = list[target];
+    var isVideo = /\.mp4$/i.test(source);
+    if (isVideo) {
+      renderFrame(target, null, direction);
+      return;
+    }
+    var photo = loadPhoto(target, 'high');
+    status.textContent = 'Загружается фото…';
+    status.hidden = false;
+    pickBtn.disabled = true;
+    photo.decode().then(function () {
+      if (version === requestVersion) renderFrame(target, photo, direction);
+    }).catch(function () {
+      if (version !== requestVersion) return;
+      status.textContent = 'Не удалось загрузить фото. Можно перейти к следующему.';
+    });
+  }
+  function renderFrame(i, photo, direction) {
     if (slide) slide.cancel();
     pinchScale = 1;
     img.style.transform = '';
-    index = (i + list.length) % list.length;
+    index = i;
     setZoom(false);
-    var isVideo = /\.mp4$/i.test(list[index]);
-    img.hidden = isVideo;
-    video.hidden = !isVideo;
-    if (isVideo) {
+    status.hidden = true;
+    pickBtn.disabled = false;
+    if (!photo) {
+      img.hidden = true;
+      video.hidden = false;
       video.poster = list[index].replace(/\.mp4$/i, '-poster.webp');
       video.src = list[index];
       var pl = video.play();
       if (pl && pl.catch) pl.catch(function () {});
-    }
-    else {
+    } else {
       video.pause();
       video.removeAttribute('src');
-      var source = list[index];
-      var preview = opts.preview && opts.preview(source);
-      img.src = preview || source;
-      if (preview) {
-        var full = new Image();
-        full.src = source;
-        full.decode().then(function () {
-          if (!box.hidden && list[index] === source) img.src = source;
-        }).catch(function () {});
-      }
+      video.hidden = true;
+      photo.className = 'lightbox__img';
+      photo.alt = opts.captions ? opts.captions[index] || '' : '';
+      img.replaceWith(photo);
+      img = photo;
     }
     count.textContent = list.length > 1 && !opts.noCount ? (index + 1) + ' / ' + list.length : ''; // в предзаказе счётчик не нужен
     prev.hidden = next.hidden = list.length < 2;
@@ -91,47 +127,67 @@
       pickBtn.textContent = picked ? (opts.pick.pickedLabel || 'Выбрано') : (opts.pick.label || 'Выбрать');
       pickBtn.classList.toggle('is-picked', !!picked);
     }
+    preloadNeighbors();
+    if (direction && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      slide = (photo || video).animate(
+        [{ transform: 'translateX(' + direction * 32 + 'px)', opacity: .68 }, { transform: 'translateX(0)', opacity: 1 }],
+        { duration: 180, easing: 'ease-out' }
+      );
+    }
   }
 
   function turn(direction) {
     if (list.length < 2) return;
-    show(index + direction);
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    slide = (img.hidden ? video : img).animate(
-      [{ transform: 'translateX(' + direction * 32 + 'px)', opacity: .68 }, { transform: 'translateX(0)', opacity: 1 }],
-      { duration: 180, easing: 'ease-out' }
-    );
+    show(requested + direction, direction);
   }
 
   function open(images, start, options) {
     if (!images.length) return;
     touch = null;
     suppressClickUntil = 0;
+    adjacent = {};
     list = images;
     opts = options || {};
     // opts задаём до show(), чтобы счётчик и подпись сразу были правильные
     lastFocus = document.activeElement;
-    show(start || 0);
+    img.hidden = true;
+    video.hidden = true;
+    bar.hidden = true;
+    count.textContent = '';
+    prev.hidden = next.hidden = list.length < 2;
+    if (!history.state || !history.state.larionLightbox) {
+      history.pushState(Object.assign({}, history.state, { larionLightbox: true }), '');
+    }
+    ownsHistory = true;
     box.hidden = false;
     document.body.classList.add('is-locked');
+    show(start || 0);
     closeBtn.focus({ preventScroll: true });
   }
 
-  function close() {
+  function close(fromHistory) {
+    var returnInHistory = ownsHistory && !fromHistory && history.state && history.state.larionLightbox;
+    ownsHistory = false;
+    requestVersion += 1;
+    adjacent = {};
     box.hidden = true;
     setZoom(false);
     video.pause();
     video.removeAttribute('src');
     document.body.classList.remove('is-locked');
     if (lastFocus) lastFocus.focus({ preventScroll: true });
+    if (returnInHistory) history.back();
   }
+  window.addEventListener('popstate', function () {
+    if (!box.hidden && (!history.state || !history.state.larionLightbox)) close(true);
+  });
 
   box.addEventListener('click', function (e) {
     if (Date.now() < suppressClickUntil && (e.target === img || e.target === box)) return;
     if (e.target === pickBtn) { opts.pick.onPick(index); return close(); }
     if (e.target === bar || e.target === caption) return;
-    if (e.target === prev) return show(index - 1);
-    if (e.target === next) return show(index + 1);
+    if (e.target === prev) return turn(-1);
+    if (e.target === next) return turn(1);
     if (e.target === video) return;
     if (e.target === img) {
       if (matchMedia('(pointer: coarse)').matches) return;
@@ -139,14 +195,14 @@
     }
     close();
   });
-  img.addEventListener('mousemove', function (e) {
-    if (box.classList.contains('is-zoomed')) moveZoom(e);
+  box.addEventListener('mousemove', function (e) {
+    if (e.target === img && box.classList.contains('is-zoomed')) moveZoom(e);
   });
   document.addEventListener('keydown', function (e) {
     if (box.hidden) return;
     if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') show(index - 1);
-    if (e.key === 'ArrowRight') show(index + 1);
+    if (e.key === 'ArrowLeft') turn(-1);
+    if (e.key === 'ArrowRight') turn(1);
   });
   function distance(touches) {
     return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
@@ -167,7 +223,14 @@
     }
   }, { passive: true });
   box.addEventListener('touchmove', function (e) {
-    if (!touch || !touch.distance || e.touches.length !== 2) return;
+    if (!touch) return;
+    if (!touch.distance && e.touches.length === 1) {
+      var finger = e.touches[0];
+      var movement = Math.hypot(finger.clientX - touch.x, finger.clientY - touch.y);
+      if (e.cancelable && movement > 7) e.preventDefault();
+      return;
+    }
+    if (!touch.distance || e.touches.length !== 2) return;
     if (e.cancelable) e.preventDefault();
     pinchScale = Math.max(1, Math.min(3, touch.scale * distance(e.touches) / touch.distance));
     img.style.transform = pinchScale === 1 ? '' : 'scale(' + pinchScale + ')';

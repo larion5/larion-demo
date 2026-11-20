@@ -3,17 +3,26 @@
 (function () {
   var data = window.LARION_GALLERY;
   if (!data) return;
+  var media = data.media || {};
   var PARTS = ['hunt', 'mystery', 'exclusive'];
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function empty(text) { return '<p class="gal-empty">' + text + '</p>'; }
   function preview(s) { return s ? s + '-preview.webp' : ''; }
+  function dimensions(src) {
+    var size = media[src];
+    return size ? ' width="' + size[0] + '" height="' + size[1] + '" style="aspect-ratio:' + size[0] + '/' + size[1] + '"' : '';
+  }
+  function original(src) {
+    var size = media[src];
+    return (size && size[2]) || src;
+  }
 
   // ---------- Фото-охота: колонки разной высоты, фото целиком
   var hunt = data.hunt || [];
   document.querySelector('[data-hunt]').innerHTML = hunt.length
     ? hunt.map(function (p, i) {
-      return '<button class="gal-photo" type="button" data-zoom="hunt" data-i="' + i + '"><img src="' + esc(preview(p.src)) + '" alt="' + esc(p.alt) + '" loading="lazy" decoding="async"></button>';
+      return '<button class="gal-photo" type="button" data-zoom="hunt" data-i="' + i + '"><img src="' + esc(preview(p.src)) + '"' + dimensions(p.src) + ' alt="' + esc(p.alt) + '" loading="lazy" decoding="async"></button>';
     }).join('')
     : empty('Скоро здесь появятся жабки на природе.');
 
@@ -28,8 +37,8 @@
         '<header class="gal-col__head"><h2>' + esc(c.title) + '</h2>' + (c.date ? '<span class="gal-col__date">' + esc(c.date) + '</span>' : '') + '</header>' +
         (c.text ? '<p class="gal-col__text">' + esc(c.text) + '</p>' : '') +
         '<div class="gal-col__body">' +
-        (c.cover ? '<button class="gal-photo gal-col__cover" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="0"><img src="' + esc(c.cover) + '" alt="Вся коллекция «' + esc(c.title) + '»" loading="lazy"></button>' : '') +
-        (c.cover2 ? '<button class="gal-photo gal-col__cover2" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (c.cover ? 1 : 0) + '"><img src="' + esc(c.cover2) + '" alt="" loading="lazy"></button>' : '') +
+        (c.cover ? '<button class="gal-photo gal-col__cover" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="0"><img src="' + esc(preview(c.cover)) + '"' + dimensions(c.cover) + ' alt="Вся коллекция «' + esc(c.title) + '»" loading="lazy"></button>' : '') +
+        (c.cover2 ? '<button class="gal-photo gal-col__cover2" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (c.cover ? 1 : 0) + '"><img src="' + esc(preview(c.cover2)) + '"' + dimensions(c.cover2) + ' alt="" loading="lazy"></button>' : '') +
         '<div class="gal-col__photos">' + photos.map(function (p, i) {
           var tile = '<button class="gal-photo gal-photo--sq" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (i + shift) + '"><img src="' + esc(preview(p.src)) + '" alt="' + esc(p.title || '') + '" loading="lazy" decoding="async"></button>';
           return p.title ? '<figure class="gal-named">' + tile + '<figcaption>' + esc(p.title) + '</figcaption></figure>' : tile;
@@ -78,23 +87,25 @@
       var cs = getComputedStyle(body);
       var cols = cs.gridTemplateColumns.split(' ');
       var colW = parseFloat(cols[0]), gap = parseFloat(cs.columnGap) || 0;
-      var tile = body.querySelector('.gal-col__photos > *');
-      var rowH = (tile ? tile.offsetHeight : colW) + (parseFloat(cs.rowGap) || 0);
+      var rowH = colW + (parseFloat(cs.rowGap) || 0);
       Array.prototype.forEach.call(body.querySelectorAll('.gal-col__cover, .gal-col__cover2'), function (c) {
         var img = c.querySelector('img');
         var want = COVER_W[c.classList.contains('gal-col__cover2') ? 'gal-col__cover2' : 'gal-col__cover'];
         var span = Math.max(1, Math.min(cols.length, Math.round((want + gap) / (colW + gap))));
         var w = span * colW + (span - 1) * gap;
-        var h = img.naturalWidth ? w * img.naturalHeight / img.naturalWidth : w;
+        var width = Number(img.getAttribute('width'));
+        var h = width ? w * Number(img.getAttribute('height')) / width : w;
         c.style.setProperty('--span', span);
         c.style.setProperty('--rows', Math.max(1, Math.ceil((h + gap) / rowH)));
       });
     });
   }
-  Array.prototype.forEach.call(document.querySelectorAll('.gal-col__cover img, .gal-col__cover2 img'), function (img) {
-    if (!img.complete) img.addEventListener('load', fitCovers);
+  var lastWidth = window.innerWidth;
+  window.addEventListener('resize', function () {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
+    fitCovers();
   });
-  window.addEventListener('resize', fitCovers);
 
   function playPreview(video) {
     if (!video.hasAttribute('src')) {
@@ -135,7 +146,7 @@
         return;
       }
       // открытая секретка (фото или видео) открывается во весь экран, видео там играет со звуком
-      if (window.LarionLightbox) window.LarionLightbox.open(mystery[Number(s.getAttribute('data-c'))].secret, Number(s.getAttribute('data-i')), { preview: preview });
+      if (window.LarionLightbox) window.LarionLightbox.open(mystery[Number(s.getAttribute('data-c'))].secret.map(original), Number(s.getAttribute('data-i')));
       return;
     }
     var b = e.target.closest('[data-zoom]');
@@ -152,7 +163,7 @@
       if (ph.some(function (p) { return p.title; })) caps = lead.map(function () { return 'Вся коллекция «' + mc.title + '»'; }).concat(ph.map(function (p) { return p.title || ''; }));
     }
     else if (kind === 'exclusive') list = exclusive[c].photos || [];
-    window.LarionLightbox.open(list, i, { captions: caps, preview: preview });
+    window.LarionLightbox.open(list.map(original), i, { captions: caps });
   });
 
   // ---------- Вкладки

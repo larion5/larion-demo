@@ -145,12 +145,15 @@
 
     cats.addEventListener('click', function (e) {
       var a = e.target.closest('a');
-      if (!a) return;
+      if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       e.preventDefault();
-      state.cat = a.getAttribute('data-cat');
+      var nextCategory = a.getAttribute('data-cat');
+      if (nextCategory === state.cat) return;
+      state.cat = nextCategory;
       state.shown = PER_PAGE;
       history.pushState(null, '', a.getAttribute('href'));
       draw();
+      window.scrollTo({ top: 0, behavior: 'instant' });
     });
     window.addEventListener('popstate', function (e) {
       state.cat = new URLSearchParams(location.search).get('cat') || '';

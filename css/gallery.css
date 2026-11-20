@@ -22,7 +22,7 @@
 /* Фото-охота: колонки, фото не обрезаются */
 .gal-hunt { columns: 3 280px; column-gap: 16px; }
 .gal-hunt .gal-photo { margin-bottom: 16px; break-inside: avoid; }
-.gal-hunt img { aspect-ratio: auto 4 / 5; }
+.gal-hunt img, .gal-col__cover img, .gal-col__cover2 img { object-fit: contain; }
 
 /* Мистери фрокс: коллекция — заголовок с датой, текст, ряд квадратных фото */
 .gal-mystery { display: flex; flex-direction: column; gap: 48px; }
