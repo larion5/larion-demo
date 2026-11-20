@@ -141,18 +141,21 @@
         '<button class="btn" type="submit">Проверить оформление — демо</button>' +
       '</form>' +
       '<div class="cart__note" data-demo-confirmation hidden>' +
-        '<b class="cart__thanks" tabindex="-1"></b>' +
-        '<span data-demo-order-amount></span><br>' +
-        '<span>Демо · чек и письма не отправляются.</span>' +
-        '<span class="cart__chat-text"><b>Где вам удобнее связаться?</b> В демо можно проверить выбор способа связи.</span>' +
+        '<span class="cart__thanks" tabindex="-1">Заказ <b>№</b> <span data-demo-order-number></span></span>' +
+        '<span class="cart__chat-text"><b>Где нам, если что, обКВАкать вопросики?</b></span>' +
         '<span class="cart__chats">' +
-          '<button type="button" class="cart__chat" data-demo-way="Телеграм">Написать в Телеграм</button>' +
-          '<button type="button" class="cart__chat" data-demo-way="ВКонтакте">Написать во ВКонтакте</button>' +
-          '<button type="button" class="cart__chat" data-demo-way="По почте">По почте</button>' +
-        '</span><span class="cart__chat-copied" role="status" hidden></span>' +
+          '<button type="button" class="cart__chat" data-demo-way="Телеграм">телеграмм</button>' +
+          '<button type="button" class="cart__chat" data-demo-way="ВКонтакте">вконтакте</button>' +
+        '</span>' +
+        '<span class="cart__chat-text">Текст автоматически скопируется, а вы вставьте его в мессенджер. Заказ принят и оплачен, все ок!</span>' +
+        '<small class="cart__chat-copied">Демо · оплата условная, сообщения не отправляются.</small>' +
+        '<span class="cart__chat-copied" role="status" hidden></span>' +
+        '<textarea data-demo-message aria-label="Сообщение с номером заказа" rows="3" readonly hidden></textarea>' +
       '</div>' +
     '</div>';
   document.body.appendChild(root);
+  var closeButton = root.querySelector('[data-cart-close]');
+  var contactPending = false;
 
   // Отмена: 5 секунд после удаления товара (крестиком или минусом до нуля) его можно вернуть.
   // Предупреждение стоит на месте товара, у каждого товара свой таймер.
@@ -205,9 +208,12 @@
   var form = root.querySelector('[data-cart-form]');
   var note = root.querySelector('[data-cart-note]');
   var confirmation = root.querySelector('[data-demo-confirmation]');
+  var orderNumber = confirmation.querySelector('[data-demo-order-number]');
+  var contactUrls = {
+    'Телеграм': 'https://t.me/larionart5',
+    'ВКонтакте': 'https://vk.me/larionartist'
+  };
   var doneKey = 'larion_demo_last_order';
-  var checkoutTotal = 0;
-  var checkoutCertOff = 0;
   var warn = root.querySelector('[data-cart-warn]');
   var HAT_OK_KEY = 'larion_demo_hat_ok';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -311,8 +317,7 @@
     // сертификатом оплачиваются товары (кроме самих сертификатов) и доставка
     var giftSum = items.reduce(function (s, i) { return s + (/^gift:/.test(i.id) ? i.qty * productOf(i).price : 0); }, 0);
     var certOff = cert ? Math.min(cert.balance, total - giftSum + (dPrice || 0)) : 0;
-    checkoutCertOff = certOff;
-    checkoutTotal = total + (dPrice || 0) - certOff;
+    var checkoutTotal = total + (dPrice || 0) - certOff;
     drawCert(certOff);
     root.querySelector('[data-cart-lines]').innerHTML =
       '<div><span>Товары</span><span>' + money(total) + '</span></div>' +
@@ -337,25 +342,76 @@
 
   function showLastDemoOrder(items) {
     confirmation.hidden = true;
+    contactPending = false;
+    closeButton.hidden = false;
     if (items.length) return;
     var order;
     try { order = JSON.parse(storeGet(doneKey)); } catch (err) { return; }
     if (!order || Date.now() - order.at > 24 * 3600 * 1000) return;
-    confirmation.querySelector('.cart__thanks').textContent = 'Спасибо! Заказ № ' + order.number + ' принят.';
-    confirmation.querySelector('[data-demo-order-amount]').textContent = order.amount;
+    orderNumber.textContent = order.number;
     confirmation.hidden = false;
     elEmpty.hidden = true;
+    contactPending = !order.contactWay;
+    closeButton.hidden = contactPending;
   }
 
-  confirmation.addEventListener('click', function (e) {
+  function copyContactText(text) {
+    function fallback() {
+      var field = document.createElement('textarea');
+      field.value = text;
+      field.readOnly = true;
+      field.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      confirmation.appendChild(field);
+      field.select();
+      field.setSelectionRange(0, text.length);
+      try { return document.execCommand('copy'); }
+      catch (err) { return false; }
+      finally { field.remove(); }
+    }
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(function () { return true; }, fallback);
+      }
+    } catch (err) {}
+    return Promise.resolve(fallback());
+  }
+
+  confirmation.addEventListener('click', async function (e) {
     var button = e.target.closest('[data-demo-way]');
     if (!button) return;
-    confirmation.querySelectorAll('[data-demo-way]').forEach(function (el) {
+    var number = orderNumber.textContent;
+    var text = 'Здравствуйте! Мой заказ № ' + number + ' был оформлен на сайте Larion';
+    var buttons = confirmation.querySelectorAll('[data-demo-way]');
+    buttons.forEach(function (el) { el.disabled = true; });
+    var pendingCopy = copyContactText(text);
+    window.open(contactUrls[button.dataset.demoWay], '_blank', 'noopener,noreferrer');
+    var copied = await pendingCopy;
+    buttons.forEach(function (el) {
+      el.disabled = false;
       el.classList.toggle('is-picked', el === button);
     });
     var status = confirmation.querySelector('[role="status"]');
-    status.textContent = button.dataset.demoWay + ' · сообщения в демо не отправляются.';
+    status.textContent = copied ? 'Сообщение скопировано.' : 'Скопируйте сообщение из поля ниже.';
     status.hidden = false;
+    try {
+      var order = JSON.parse(storeGet(doneKey));
+      if (order && order.number === number) {
+        order.contactWay = button.dataset.demoWay;
+        storeSet(doneKey, JSON.stringify(order));
+      }
+    } catch (err) {}
+    contactPending = false;
+    closeButton.hidden = false;
+    var message = confirmation.querySelector('[data-demo-message]');
+    message.hidden = copied;
+    if (copied) {
+      close();
+      window.LarionSay('Сообщение с номером заказа скопировано.');
+    } else {
+      message.value = text;
+      message.focus();
+      message.select();
+    }
   });
 
   var lastFocus;
@@ -365,9 +421,10 @@
     render();
     root.classList.add('is-open');
     document.body.classList.add('is-locked');
-    root.querySelector('[data-cart-close]').focus();
+    (contactPending ? confirmation.querySelector('.cart__thanks') : closeButton).focus();
   }
   function close() {
+    if (contactPending) return;
     clearAllUndo();
     root.classList.remove('is-open');
     document.body.classList.remove('is-locked');
@@ -398,6 +455,25 @@
       setQty(id, 0);
     }
   });
+  document.addEventListener('keydown', function (e) {
+    if (!contactPending || !root.classList.contains('is-open')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+    if (e.key !== 'Tab') return;
+    var buttons = Array.from(confirmation.querySelectorAll('[data-demo-way]'));
+    var index = buttons.indexOf(document.activeElement);
+    if (index === -1 || (e.shiftKey ? index === 0 : index === buttons.length - 1)) {
+      e.preventDefault();
+      buttons[e.shiftKey ? buttons.length - 1 : 0].focus();
+    }
+  }, true);
+  document.addEventListener('click', function (e) {
+    if (!contactPending || !root.classList.contains('is-open') || root.contains(e.target)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }, true);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && root.classList.contains('is-open')) close();
   });
@@ -506,13 +582,8 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     if (!window.LarionDemo.finish(form, root)) return;
-    var amount = checkoutCertOff
-      ? 'Сертификатом оплачено ' + money(checkoutCertOff) +
-        (checkoutTotal ? ', осталось доплатить ' + money(checkoutTotal) : ' — доплачивать ничего не нужно') +
-        (cert.balance > checkoutCertOff ? '. На сертификате осталось ' + money(cert.balance - checkoutCertOff) : '') + '.'
-      : 'Сумма заказа ' + money(checkoutTotal) + '.';
     var at = Date.now();
-    storeSet(doneKey, JSON.stringify({ number: 'DEMO-' + String(at).slice(-6), amount: amount, at: at }));
+    storeSet(doneKey, JSON.stringify({ number: 'DEMO-' + String(at).slice(-6), at: at }));
     storeSet(KEY, null);
     storeSet(CERT_KEY, null);
     window.LarionDemo.memory.removeItem(FORM_KEY);
@@ -522,6 +593,7 @@
     clearAllUndo();
     confirmation.querySelectorAll('[data-demo-way]').forEach(function (el) { el.classList.remove('is-picked'); });
     confirmation.querySelector('[role="status"]').hidden = true;
+    confirmation.querySelector('[data-demo-message]').hidden = true;
     render();
     confirmation.querySelector('.cart__thanks').focus();
   });

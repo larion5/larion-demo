@@ -18,12 +18,16 @@
   function applyLayout() {
     STAGE_W = narrow.matches ? 920 : 1240;
     CX = STAGE_W / 2;
-    RADIUS = narrow.matches ? { hat: 410, frog: 430, mat: 450 } : { hat: 520, frog: 540, mat: 560 };
+    RADIUS = narrow.matches ? { frog: 430, mat: 450 } : { frog: 540, mat: 560 };
   }
   applyLayout();
   var SIDE_DROP = { hat: 0, frog: 0, mat: 190 };   // соседние коврики ниже, чтобы не смешиваться с жабками
   var SIDE_SCALE = 0.45;
   var SIDE_OPACITY = 0.65;
+  // Шляпы занимают по три места с каждой стороны и плавно уходят за край ряда.
+  var HAT_X = [0, 0.18, 0.315, 0.44, 0.51];
+  var HAT_SCALE = [1, 0.59, 0.43, 0.29, 0.24];
+  var HAT_OPACITY = [1, 0.8, 0.65, 0.5, 0];
 
   var reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -109,9 +113,18 @@
         s.img.src = s.item.src.replace(/\.webp$/, '-stage.webp');
       }
       var limited = Math.max(-1.5, Math.min(1.5, d));
-      var x = RADIUS[kind] * Math.sin(limited * Math.PI / 3.2);
-      var scale = abs <= 1 ? 1 - (1 - SIDE_SCALE) * abs : SIDE_SCALE - 0.1 * Math.min(abs - 1, 0.5) * 2;
-      var opacity = abs <= 1 ? 1 - (1 - SIDE_OPACITY) * abs : Math.max(0, SIDE_OPACITY * (1.5 - abs) * 2);
+      var x, scale, opacity;
+      if (kind === 'hat') {
+        var step = Math.min(Math.floor(abs), 3);
+        var fraction = Math.min(abs - step, 1);
+        x = Math.sign(d) * STAGE_W * (HAT_X[step] + (HAT_X[step + 1] - HAT_X[step]) * fraction);
+        scale = HAT_SCALE[step] + (HAT_SCALE[step + 1] - HAT_SCALE[step]) * fraction;
+        opacity = HAT_OPACITY[step] + (HAT_OPACITY[step + 1] - HAT_OPACITY[step]) * fraction;
+      } else {
+        x = RADIUS[kind] * Math.sin(limited * Math.PI / 3.2);
+        scale = abs <= 1 ? 1 - (1 - SIDE_SCALE) * abs : SIDE_SCALE - 0.1 * Math.min(abs - 1, 0.5) * 2;
+        opacity = abs <= 1 ? 1 - (1 - SIDE_OPACITY) * abs : Math.max(0, SIDE_OPACITY * (1.5 - abs) * 2);
+      }
       if (!s.item) {
         // Подпись «без шляпы» не уменьшается, иначе её не прочитать, и в центре исчезает.
         scale = 1;
