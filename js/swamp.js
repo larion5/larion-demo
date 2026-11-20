@@ -278,31 +278,57 @@
   }
   var tapped = null;
   var hideTimer;
-  var lastPointer = '';
-  field.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType; });
+  var touchStart = null;
+  var lastTouchAt = 0;
+  var lastFrogTap = null;
+  field.addEventListener('touchstart', function (e) {
+    touchStart = e.touches.length === 1 ? e.touches[0] : null;
+    lastTouchAt = Date.now();
+  }, { passive: true });
+  field.addEventListener('touchcancel', function () { touchStart = null; });
+  field.addEventListener('touchend', function (e) {
+    var start = touchStart;
+    touchStart = null;
+    lastTouchAt = Date.now();
+    if (!start || e.touches.length || e.changedTouches.length !== 1) return;
+    var finger = e.changedTouches[0];
+    var x = finger.clientX, y = finger.clientY;
+    if (Math.hypot(x - start.clientX, y - start.clientY) > 14) return;
+
+    var hit = hitSpot(x, y);
+    if (!hit && tapped && Math.hypot(x - tapped.x, y - tapped.y) < 22) hit = tapped.spot;
+    clearTimeout(hideTimer);
+    if (!hit || !hit.guest) {
+      tapped = null;
+      setHover(null);
+      return;
+    }
+    // The touch event owns the frog tap, even when the browser also emits a click.
+    if (e.cancelable) e.preventDefault();
+    lastFrogTap = { x: x, y: y, at: lastTouchAt };
+    if (tapped && tapped.spot === hit) {
+      croak(hit);
+      hideTimer = setTimeout(function () {
+        tapped = null;
+        setHover(null);
+      }, 2000);
+    }
+    tapped = { spot: hit, x: x, y: y };
+    setHover(hit);
+  }, { passive: false });
   field.addEventListener('click', function (e) {
     var spot = e.target.closest('.swamp__spot');
     var keyboard = e.detail === 0;
     if (keyboard && spot && spot.hasAttribute('href')) return;
     var hit = keyboard ? spots.find(function (s) { return s.el === spot; }) : hitSpot(e.clientX, e.clientY);
-    var touchInput = !keyboard && (e.pointerType || lastPointer) === 'touch';
-    if (touchInput && !hit && tapped && Math.hypot(e.clientX - tapped.x, e.clientY - tapped.y) < 22) hit = tapped.spot;
+    var afterTap = lastFrogTap && Date.now() - lastFrogTap.at < 700 &&
+      Math.hypot(e.clientX - lastFrogTap.x, e.clientY - lastFrogTap.y) < 22;
+    if (afterTap) { e.preventDefault(); return; }
     if (hit && hit.guest) {
       e.preventDefault();
-      if (!touchInput) { croak(hit); return; }
-      clearTimeout(hideTimer);
-      if (tapped && tapped.spot === hit) {
-        croak(hit);
-        hideTimer = setTimeout(function () {
-          tapped = null;
-          setHover(null);
-        }, 2000);
-      }
-      tapped = { spot: hit, x: e.clientX, y: e.clientY };
-      setHover(hit);
+      if (e.pointerType !== 'touch' && !(e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents)) croak(hit);
       return;
     }
-    if (touchInput) { clearTimeout(hideTimer); tapped = null; setHover(null); }
     if (keyboard) return;
     if (!hit && hitFlower(e.clientX, e.clientY)) { e.preventDefault(); location.href = FLOWER_HREF; return; }
     // клик мимо жабки (по кочке) ничего не открывает
@@ -312,14 +338,14 @@
     }
   });
   field.addEventListener('pointermove', function (e) {
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType === 'touch' || Date.now() - lastTouchAt < 700) return;
     clearTimeout(hideTimer);
     tapped = null;
     var s = hitSpot(e.clientX, e.clientY);
     setHover(s, !s && hitFlower(e.clientX, e.clientY));
   });
   field.addEventListener('pointerleave', function (e) {
-    if (e.pointerType !== 'touch') setHover(null);
+    if (e.pointerType !== 'touch' && Date.now() - lastTouchAt >= 700) setHover(null);
   });
 
   // Время от времени случайная жабка выглядывает сама.
