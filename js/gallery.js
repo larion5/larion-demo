@@ -36,7 +36,7 @@
         // секретные жабки — под спойлером: размыты, пока не нажмёшь; бывает и видео
         (c.secret || []).map(function (src, i) {
           var media = /\.mp4$/i.test(src)
-            ? '<video src="' + esc(src) + '#t=0.5" muted loop playsinline preload="metadata"></video>'
+            ? '<video data-src="' + esc(src) + '#t=0.5" muted loop playsinline preload="none"></video>'
             : '<img src="' + esc(src) + '" alt="" loading="lazy">';
           return '<button class="gal-photo gal-photo--sq gal-secret" type="button" data-secret data-c="' + ci + '" data-i="' + i + '" aria-label="Показать секретную жабку">' +
             media + '<span class="gal-secret__label">Секретная жабка<small>нажмите, чтобы увидеть</small></span></button>';
@@ -53,7 +53,7 @@
       // первым может быть видео: в карточке играет само без звука, по нажатию — во весь экран со звуком
       var isVid = function (s) { return /\.mp4$/i.test(s || ''); };
       var first = isVid(photos[0])
-        ? '<button class="gal-photo gal-photo--card gal-video" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0" aria-label="Смотреть видео"><video src="' + esc(photos[0]) + '" muted loop playsinline autoplay preload="metadata"></video>'
+        ? '<button class="gal-photo gal-photo--card gal-video" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0" aria-label="Смотреть видео"><video data-src="' + esc(photos[0]) + '" muted loop playsinline preload="none"></video>'
         : '<button class="gal-photo gal-photo--card" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0"><img src="' + esc(photos[0] || '') + '" alt="" loading="lazy">';
       var vids = photos.filter(isVid).length;
       var count = vids === photos.length ? vids + ' видео' : photos.length + ' фото';
@@ -95,6 +95,20 @@
   });
   window.addEventListener('resize', fitCovers);
 
+  function playPreview(video) {
+    if (!video.hasAttribute('src')) video.src = video.dataset.src;
+    video.play().catch(function () {});
+  }
+  var previews = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) playPreview(entry.target);
+      else entry.target.pause();
+    });
+  });
+  document.querySelectorAll('[data-exclusive] video[data-src]').forEach(function (video) {
+    previews.observe(video);
+  });
+
   // ---------- Просмотр во весь экран
   document.querySelector('main').addEventListener('click', function (e) {
     var gv = e.target.closest('[data-video]');
@@ -110,7 +124,10 @@
       var vid = s.querySelector('video');
       if (!s.classList.contains('is-open')) {
         s.classList.add('is-open');
-        if (vid) { var pl = vid.play(); if (pl && pl.catch) pl.catch(function () {}); }
+        if (vid) {
+          playPreview(vid);
+          previews.observe(vid);
+        }
         return;
       }
       // открытая секретка (фото или видео) открывается во весь экран, видео там играет со звуком

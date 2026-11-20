@@ -5,9 +5,9 @@
 // Коврик ставится центром под жабку. transform — поворот и наклон (у кувшинки, чтобы вырез был виден сбоку).
 window.LARION_CONSTRUCTOR = {
   frogs: [
-    { id: '146011476013', src: 'assets/img/constructor/frog-146011476013.png', w: 308, h: 263, ax: 156, ay: 2, by: 258 },
-    { id: '235460268133', src: 'assets/img/constructor/frog-235460268133.png', w: 303, h: 272, ax: 164, ay: 10, by: 259 },
-    { id: '749964285913', src: 'assets/img/constructor/frog-749964285913.png', w: 339, h: 389, ax: 175, ay: 14, by: 362 }
+    { id: '146011476013', src: 'assets/img/constructor/frog-146011476013.webp', w: 308, h: 263, ax: 156, ay: 2, by: 258 },
+    { id: '235460268133', src: 'assets/img/constructor/frog-235460268133.webp', w: 303, h: 272, ax: 164, ay: 10, by: 259 },
+    { id: '749964285913', src: 'assets/img/constructor/frog-749964285913.webp', w: 339, h: 389, ax: 175, ay: 14, by: 362 }
   ],
   hats: [
     { id: '559100002902', src: 'assets/img/constructor/hat-559100002902-head.png', w: 117, h: 106, ax: 58, ay: 90 }, // цветочек без палочки, первым
@@ -19,7 +19,7 @@ window.LARION_CONSTRUCTOR = {
     { id: '559100000744', src: 'assets/img/constructor/hat-559100000744.png', w: 95, h: 86, ax: 42, ay: 72 },
     { id: '559100000889', src: 'assets/img/constructor/hat-559100000889.png', w: 93, h: 113, ax: 47, ay: 104 },
     { id: '559100000971', src: 'assets/img/constructor/hat-559100000971.png', w: 118, h: 150, ax: 71, ay: 136 },
-    { id: '559100001183', src: 'assets/img/constructor/hat-559100001183.png', w: 240, h: 302, ax: 115, ay: 296 },
+    { id: '559100001183', src: 'assets/img/constructor/hat-559100001183.webp', w: 240, h: 302, ax: 115, ay: 296 },
     { id: '559100001276', src: 'assets/img/constructor/hat-559100001276.png', w: 99, h: 80, ax: 39, ay: 62 },
     { id: '559100001430', src: 'assets/img/constructor/hat-559100001430.png', w: 117, h: 92, ax: 52, ay: 74 },
     { id: '559100001540', src: 'assets/img/constructor/hat-559100001540.png', w: 127, h: 92, ax: 49, ay: 77 },
@@ -34,12 +34,12 @@ window.LARION_CONSTRUCTOR = {
     { id: '559100002801', src: 'assets/img/constructor/hat-559100002801.png', w: 128, h: 136, ax: 64, ay: 122 }
   ],
   mats: [
-    { id: '798615472313', src: 'assets/img/constructor/mat-798615472313.png', w: 510, h: 481, transform: 'scaleY(.58) rotate(118deg)' },
-    { id: '672138673013', src: 'assets/img/constructor/mat-672138673013.png', w: 874, h: 676 },
-    { id: '330055288513', src: 'assets/img/constructor/mat-330055288513.png', w: 772, h: 557 },
-    { id: '592423008803', src: 'assets/img/constructor/mat-592423008803.png', w: 535, h: 427 },
-    { id: '559100000146', src: 'assets/img/constructor/mat-559100000146.png', w: 720, h: 599 },
-    { id: '559100000350', src: 'assets/img/constructor/mat-559100000350.png', w: 688, h: 608 },
-    { id: '559100000433', src: 'assets/img/constructor/mat-559100000433.png', w: 485, h: 425 }
+    { id: '798615472313', src: 'assets/img/constructor/mat-798615472313.webp', w: 510, h: 481, transform: 'scaleY(.58) rotate(118deg)' },
+    { id: '672138673013', src: 'assets/img/constructor/mat-672138673013.webp', w: 874, h: 676 },
+    { id: '330055288513', src: 'assets/img/constructor/mat-330055288513.webp', w: 772, h: 557 },
+    { id: '592423008803', src: 'assets/img/constructor/mat-592423008803.webp', w: 535, h: 427 },
+    { id: '559100000146', src: 'assets/img/constructor/mat-559100000146.webp', w: 720, h: 599 },
+    { id: '559100000350', src: 'assets/img/constructor/mat-559100000350.webp', w: 688, h: 608 },
+    { id: '559100000433', src: 'assets/img/constructor/mat-559100000433.webp', w: 485, h: 425 }
   ]
 };

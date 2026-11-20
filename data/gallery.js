@@ -62,9 +62,9 @@ window.LARION_GALLERY = {
       date: '2026',
       text: 'Клоунская коллекция к 1 апреля. У каждого клоуна есть своё имя и род деятельности, а презентация фигурок в телеграме была как цирковое представление с антрактом!',
       cover: 'assets/img/gallery/mystery-clowns-cover.webp',
-      cover2: 'assets/img/gallery/mystery-clowns-lineup.png',
+      cover2: 'assets/img/gallery/mystery-clowns-lineup.webp',
       photos: [
-        { src: 'assets/img/gallery/mystery-clowns-1.png', title: 'Ведущий' },
+        { src: 'assets/img/gallery/mystery-clowns-1.webp', title: 'Ведущий' },
         { src: 'assets/img/gallery/mystery-clowns-2.webp', title: 'Петрушка' },
         { src: 'assets/img/gallery/mystery-clowns-3.webp', title: 'Жабглер' },
         { src: 'assets/img/gallery/mystery-clowns-4.webp', title: 'Жадам' },
