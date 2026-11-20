@@ -239,6 +239,16 @@
     }
     return null;
   }
+  function nearbyFrog(x, y) {
+    for (var radius = 6; radius <= 24; radius += 6) {
+      for (var direction = 0; direction < 8; direction++) {
+        var angle = direction * Math.PI / 4;
+        var hit = hitSpot(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+        if (hit && hit.guest) return hit;
+      }
+    }
+    return null;
+  }
   // Цветочки Леры ведут на «Шляпу цветочек». Проверяем по пикселям, не закрыт ли цветочек мхом.
   var FLOWER_HREF = 'product.html?id=559100002902';
   function hitFlower(x, y) {
@@ -296,7 +306,9 @@
     if (Math.hypot(x - start.clientX, y - start.clientY) > 14) return;
 
     var hit = hitSpot(x, y);
-    if (!hit && tapped && Math.hypot(x - tapped.x, y - tapped.y) < 22) hit = tapped.spot;
+    if (!hit && !hitFlower(x, y)) {
+      hit = tapped && Math.hypot(x - tapped.x, y - tapped.y) < 24 ? tapped.spot : nearbyFrog(x, y);
+    }
     clearTimeout(hideTimer);
     if (!hit || !hit.guest) {
       tapped = null;

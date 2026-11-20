@@ -94,7 +94,7 @@
           '<button type="button" data-warn-ok>Нет, я осознаю свой выбор</button>' +
         '</div>' +
       '</div>' +
-      // мягкая подсказка (не мешает заказу): к жабагочи — шляпку, к обычной жабке — коврик
+      // Подсказки о сочетаниях товаров, которые нужно подтвердить перед оформлением.
       '<div class="cart__tip" data-cart-tip hidden><p data-tip-text></p><div class="cart__warn-btns"><a class="cart__warn-yes" data-tip-link></a><button type="button" data-tip-no>Нет, спасибо</button></div></div>' +
       '<div data-cart-empty class="cart__empty" hidden>Жаб тут пока нетю, они ждут, когда их заберут домой</div>' +
       '<form data-cart-form novalidate>' +
@@ -215,17 +215,25 @@
   };
   var doneKey = 'larion_demo_last_order';
   var warn = root.querySelector('[data-cart-warn]');
-  var HAT_OK_KEY = 'larion_demo_hat_ok';
+  var tip = root.querySelector('[data-cart-tip]');
+  var WARNING_KEY = 'larion_demo_cart_warning_choices';
+  var warningChoices = { cart: '', accepted: {} };
+  try { warningChoices = JSON.parse(sessionStorage.getItem(WARNING_KEY)) || warningChoices; } catch (err) {}
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) {} }
+  function saveWarningChoices() {
+    try { sessionStorage.setItem(WARNING_KEY, JSON.stringify(warningChoices)); } catch (err) {}
+  }
+  function acceptWarning(kind) {
+    warningChoices.accepted[kind] = true;
+    saveWarningChoices();
+    render();
+  }
   warn.addEventListener('click', function (e) {
-    if (e.target.closest('[data-warn-ok]')) { storeSet(HAT_OK_KEY, '1'); render(); }
+    if (e.target.closest('a, button')) acceptWarning('gochi');
   });
-  var tip = root.querySelector('[data-cart-tip]');
   tip.addEventListener('click', function (e) {
-    if (!e.target.closest('[data-tip-no]')) return;
-    try { sessionStorage.setItem('larion_demo_tip_' + tip.getAttribute('data-kind'), '1'); } catch (err) {}
-    tip.hidden = true;
+    if (e.target.closest('a, button')) acceptWarning(tip.getAttribute('data-kind'));
   });
 
   // первая строка названия — жирная, остальные (выбор предзаказа) — обычным мелким списком
@@ -241,6 +249,11 @@
   }
   function render() {
     var items = read();
+    var cartKey = JSON.stringify(items.map(function (i) { return [i.id, i.qty]; }).sort());
+    if (warningChoices.cart !== cartKey) {
+      warningChoices = { cart: cartKey, accepted: {} };
+      saveWarningChoices();
+    }
     var count = items.reduce(function (s, i) { return s + i.qty; }, 0);
     var total = items.reduce(function (s, i) { return s + i.qty * productOf(i).price; }, 0);
 
@@ -274,17 +287,14 @@
     // Шляпы есть, а жабагочи (в том числе предзаказа с дырочкой под шляпку) нет — спрашиваем.
     var hasHat = items.some(function (i) { return productOf(i).category === 'shlyapi' || /^set:/.test(i.id); }); // в наборе шляпа уже есть
     var hasGochi = items.some(function (i) { return productOf(i).category === 'zhabagochi' || /^pre:.*:gochi:/.test(i.id); });
-    if (!hasHat) storeSet(HAT_OK_KEY, '');
-    warn.hidden = !hasHat || hasGochi || storeGet(HAT_OK_KEY) === '1';
+    warn.hidden = !hasHat || hasGochi || Boolean(warningChoices.accepted.gochi);
 
-    // «Может, шляпку?» к жабагочи без шляпы, «Может, коврик?» к жабке без коврика. «Нет, спасибо» — до конца визита.
+    // «Может, шляпку?» к жабагочи без шляпы, «Может, коврик?» к жабке без коврика.
     var hasMat = items.some(function (i) { return productOf(i).category === 'kovriki'; });
     var hasFrog = items.some(function (i) { var c = productOf(i).category; return c === 'zhabi' || (/^pre:/.test(i.id) && !/:gochi:/.test(i.id)); });
     var onlyMats = items.length > 0 && items.every(function (i) { return productOf(i).category === 'kovriki'; });
     var tipKind = onlyMats ? 'frog' : hasGochi && !hasHat ? 'hat' : hasFrog && !hasMat && !hasGochi ? 'mat' : '';
-    var tipOff = false;
-    try { tipOff = sessionStorage.getItem('larion_demo_tip_' + tipKind) === '1'; } catch (e) {}
-    tip.hidden = !tipKind || tipOff;
+    tip.hidden = !tipKind || Boolean(warningChoices.accepted[tipKind]);
     if (tipKind) {
       tip.setAttribute('data-kind', tipKind);
       tip.querySelector('[data-tip-text]').innerHTML = tipKind === 'frog'
@@ -581,6 +591,13 @@
   });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    var pendingWarning = !warn.hidden ? warn : !tip.hidden ? tip : null;
+    if (pendingWarning) {
+      window.LarionSay('Выберите один из вариантов в предупреждении, чтобы оформить заказ.');
+      pendingWarning.querySelector('a, button').focus({ preventScroll: true });
+      pendingWarning.scrollIntoView({ block: 'center' });
+      return;
+    }
     if (!window.LarionDemo.finish(form, root)) return;
     var at = Date.now();
     storeSet(doneKey, JSON.stringify({ number: 'DEMO-' + String(at).slice(-6), at: at }));
