@@ -210,7 +210,7 @@
   var confirmation = root.querySelector('[data-demo-confirmation]');
   var orderNumber = confirmation.querySelector('[data-demo-order-number]');
   var contactUrls = {
-    'Телеграм': 'https://t.me/larionart5',
+    'Телеграм': 'https://t.me/larionart5?direct',
     'ВКонтакте': 'https://vk.me/larionartist'
   };
   var doneKey = 'larion_demo_last_order';
