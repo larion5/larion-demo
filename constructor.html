@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout3"><script src="js/demo.js?v=checkout3"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Конструктор жабагочи | Larion</title>
+  <meta name="description" content="Выберите жабагочи и примерьте на неё шляпы и коврики.">
+  <link rel="stylesheet" href="css/style.css?v=top1">
+  <link rel="stylesheet" href="css/constructor.css">
+</head>
+<body data-page-script="js/constructor.js">
+  <div id="site-header"></div>
+
+  <main class="page">
+    <div class="builder-head">
+      <h1 class="title">Конструктор</h1>
+    </div>
+
+    <section class="builder" data-constructor>
+      <p class="builder__hint">Соберите свою жабку: тяните вбок шляпу, жабагочи или коврик, и они будут сменяться по кругу.</p>
+      <div class="builder__main">
+        <div class="stage" data-stage>
+          <div class="band band--mat" data-band="mat"></div>
+          <div class="stage__shadow" data-layer="shadow"></div>
+          <div class="band band--frog" data-band="frog"></div>
+          <div class="band band--hat" data-band="hat"></div>
+          <button class="stage__random" type="button" data-random><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.8"/><circle cx="8.8" cy="8.8" r="1.5" fill="currentColor"/><circle cx="15.2" cy="8.8" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="8.8" cy="15.2" r="1.5" fill="currentColor"/><circle cx="15.2" cy="15.2" r="1.5" fill="currentColor"/></svg>Случайная комбинация</button>
+          <button class="arrow arrow--prev stage__arrow stage__arrow--left stage__arrow--hat" type="button" data-kind="hat" data-step="-1" aria-label="Предыдущая позиция: шляпа"></button>
+          <button class="arrow stage__arrow stage__arrow--right stage__arrow--hat" type="button" data-kind="hat" data-step="1" aria-label="Следующая позиция: шляпа"></button>
+          <button class="arrow arrow--prev stage__arrow stage__arrow--left stage__arrow--frog" type="button" data-kind="frog" data-step="-1" aria-label="Предыдущая позиция: жабагочи"></button>
+          <button class="arrow stage__arrow stage__arrow--right stage__arrow--frog" type="button" data-kind="frog" data-step="1" aria-label="Следующая позиция: жабагочи"></button>
+          <button class="arrow arrow--prev stage__arrow stage__arrow--left stage__arrow--mat" type="button" data-kind="mat" data-step="-1" aria-label="Предыдущая позиция: коврик"></button>
+          <button class="arrow stage__arrow stage__arrow--right stage__arrow--mat" type="button" data-kind="mat" data-step="1" aria-label="Следующая позиция: коврик"></button>
+        </div>
+      </div>
+
+      <aside class="builder__side">
+        <div class="set">
+          <ul data-summary></ul>
+          <div class="set__total"><span>Итого</span><span class="price" data-total></span></div>
+          <button class="btn" type="button" data-add-set>Добавить набор в корзину</button>
+          <div class="set__more" data-set-more hidden>
+            <p class="set__more-title">Ещё шляпку? 🎩</p>
+            <p>Шляп и ковриков можно взять несколько: покрутите шляпу или коврик и нажмите кнопку выше. Набор уже в корзине.</p>
+          </div>
+          <p class="set__note" data-set-note hidden></p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="data/catalog.js"></script>
+  <script src="data/constructor.js"></script>
+  <script src="data/photo-focus.js"></script>
+  <script src="js/focus.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/sheet.js?v=checkout3"></script>
+</body>
+</html>

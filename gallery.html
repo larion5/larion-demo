@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout3"><script src="js/demo.js?v=checkout3"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Галерея | Larion</title>
+  <meta name="description" content="Жабки Larion на природе, коллекции мистери фрокс и эксклюзивные аукционные жабки.">
+  <link rel="stylesheet" href="css/style.css?v=top1">
+  <link rel="stylesheet" href="css/gallery.css">
+</head>
+<body data-page-script="js/gallery.js">
+  <div id="site-header"></div>
+
+  <main class="page">
+    <div class="gal-head"><h1 class="title">Галерея</h1></div>
+
+    <!-- Разделы галереи; содержимое — data/gallery.js, логика — js/gallery.js -->
+    <nav class="gal-tabs" data-gal-tabs aria-label="Разделы галереи">
+      <a href="#hunt" data-tab="hunt">Фото-охота</a>
+      <a href="#mystery" data-tab="mystery">Мистери фрокс</a>
+      <a href="#exclusive" data-tab="exclusive">Эксклюзив</a>
+    </nav>
+
+    <section class="gal-part" id="hunt" data-part="hunt">
+      <p class="gal-lead">Жабки на природе: в траве, на камнях, в цветах и на прогулках.</p>
+      <div class="gal-hunt" data-hunt></div>
+    </section>
+
+    <section class="gal-part" id="mystery" data-part="mystery" hidden>
+      <p class="gal-lead">Сюрприз-боксы с жабками, посвящённые сезонам и разным темам. Каждая коллекция выходит один раз. Фигурки из коллекций можно повторить по договорённости — <a class="gal-link" href="index.html#contacts">напишите мне</a>. <b class="gal-mark">Секретные жабки не повторяются.</b></p>
+      <div class="gal-mystery" data-mystery></div>
+    </section>
+
+    <section class="gal-part" id="exclusive" data-part="exclusive" hidden>
+      <p class="gal-lead gal-lead--wide">Уникальные фигурки, повторов не делаю. Некоторые продались за 10 000 ₽</p>
+      <div class="gal-exclusive" data-exclusive></div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="data/catalog.js"></script>
+  <script src="data/gallery.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/sheet.js?v=checkout3"></script>
+</body>
+</html>

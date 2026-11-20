@@ -1,0 +1,40 @@
+// Кадры фото на главной заданы прямо в index.html (object-position).
+// Здесь — карточки товаров. Где на фото находится главный объект: [по горизонтали, по вертикали] в процентах.
+// [50, 0] — верхний край снимка, [50, 100] — нижний. Фото, которых здесь нет, кадрируются по центру.
+window.LARION_FOCUS = {
+  // Товары
+  'assets/img/products/749964285913-2.jpg': [50, 48],
+  'assets/img/products/749964285913-3.jpg': [50, 58],
+  'assets/img/products/940940779973-2.webp': [50, 47],
+  'assets/img/products/480592630013-1.jpg': [50, 46],
+  'assets/img/products/480592630013-2.jpg': [50, 42],
+  'assets/img/products/672138673013-3.jpg': [50, 57],
+  'assets/img/products/330055288513-2.jpg': [50, 50],
+  'assets/img/products/592423008803-2.jpg': [50, 55],
+  'assets/img/products/853321795823-1.webp': [50, 55],
+  'assets/img/products/979047627703-1.webp': [50, 48],
+  'assets/img/products/501426640273-1.webp': [50, 45],
+  'assets/img/products/406302944543-1.jpg': [50, 45],
+  'assets/img/products/406302944543-2.webp': [50, 47],
+  'assets/img/products/406302944543-3.jpg': [50, 40],
+  'assets/img/products/406302944543-4.jpg': [50, 42],
+  'assets/img/products/959892764723-1.webp': [50, 45],
+  'assets/img/products/959892764723-2.jpg': [50, 48],
+  'assets/img/products/617711925963-3.jpg': [50, 42],
+  'assets/img/products/481047126343-1.webp': [50, 45],
+  'assets/img/products/481047126343-2.jpg': [50, 28],
+  'assets/img/products/481047126343-3.jpg': [50, 30],
+  'assets/img/products/595858644513-1.webp': [50, 42],
+  'assets/img/products/595858644513-2.webp': [50, 40],
+  'assets/img/products/595858644513-3.jpg': [50, 45],
+  'assets/img/products/978213704923-1.webp': [50, 38],
+  'assets/img/products/978213704923-2.jpg': [50, 30],
+  'assets/img/products/978213704923-3.jpg': [50, 42],
+  'assets/img/products/528594720463-3.webp': [50, 55],
+  'assets/img/products/121266855943-2.webp': [50, 55],
+  'assets/img/products/834511395383-1.jpg': [50, 40],
+  'assets/img/products/834511395383-2.jpg': [50, 38],
+  'assets/img/products/284295386763-1.webp': [50, 30],
+  'assets/img/products/284295386763-2.jpg': [65, 52],
+  'assets/img/products/141052642413-1.webp': [50, 42]
+};

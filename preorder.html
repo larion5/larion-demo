@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout3"><script src="js/demo.js?v=checkout3"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Предзаказ жабки | Larion</title>
+  <meta name="description" content="Выберите позу, мордочку и окрас по фото — Лера слепит жабку вручную.">
+  <link rel="stylesheet" href="css/style.css?v=top1">
+  <link rel="stylesheet" href="css/preorder.css">
+</head>
+<body data-page-script="js/preorder.js">
+  <div id="site-header"></div>
+
+  <main class="page">
+    <div class="pre-head">
+      <h1 class="title">Предзаказ</h1>
+      <p>Если не нашли свою жабку в наличии, то выберите позу, а к ней мордочку и окрас — по фото уже слепленных жабок. Каждая жабка лепится вручную, поэтому будет немного отличаться от фото. <b class="pre-head__time">Срок изготовления — 1–3 недели.</b></p>
+    </div>
+
+    <section class="pre" data-preorder>
+      <!-- Галерея: три раздела с фото, логика в js/preorder.js -->
+      <div class="pre__gallery" data-steps></div>
+
+      <!-- Ваш выбор: всегда на виду -->
+      <aside class="pre__side" id="pre-order">
+        <div class="pre-sum">
+          <h2 class="pre-sum__title">Ваша жабка</h2>
+          <template data-random-tpl><button class="pre__random" type="button" data-random><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.8"/><circle cx="8.8" cy="8.8" r="1.5" fill="currentColor"/><circle cx="15.2" cy="8.8" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="8.8" cy="15.2" r="1.5" fill="currentColor"/><circle cx="15.2" cy="15.2" r="1.5" fill="currentColor"/></svg>Случайная комбинация</button></template>
+          <div class="pre-picks" data-picks></div>
+          <label class="switch" data-look-box hidden><input type="checkbox" data-look><span class="switch__track" aria-hidden="true"></span><span><span data-look-title></span><small></small></span></label>
+          <label class="switch"><input type="checkbox" data-gochi><span class="switch__track" aria-hidden="true"></span><span>Жабагочи<small>с дырочкой под шляпку, +700 ₽</small></span></label>
+          <label class="pre-wish">Пожелания
+            <textarea data-comment rows="2" placeholder="Например: злые глазки, а ротик с щечками"></textarea>
+          </label>
+          <!-- итог и кнопка прилипают к низу колонки: видны, даже если выбрано много и экран невысокий -->
+          <div class="pre-sum__foot">
+            <div class="pre-sum__total"><span>Итого</span><span class="price" data-total></span></div>
+            <button class="btn" type="button" data-add-pre>Добавить в корзину</button>
+            <p class="pre-sum__time">Слеплю за 1–3 недели</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Телефон: полоса внизу с выбором и ценой -->
+      <a class="pre-bar" href="#pre-order" data-bar>
+        <span class="pre-bar__picks" data-bar-picks></span>
+        <span class="pre-bar__price" data-bar-total></span>
+        <span class="pre-bar__go">К заказу</span>
+      </a>
+    </section>
+
+    <!-- Жабки, которых нет в галерее -->
+    <div class="pre-more">
+      <p>Здесь не все жабки, которых я лепила. Если в альбоме понравилась другая — <a href="index.html#contacts">напишите мне</a>, и обсудим, смогу ли я её повторить.</p>
+      <a class="btn" href="#demo-contact" target="_blank" rel="noopener">Смотреть альбом с жабками</a>
+    </div>
+
+    <!-- Коврики и шляпы из каталога, заполняет js/preorder.js -->
+    <section class="related" data-pre-rec hidden>
+      <h2>Не забудьте добавить в заказ</h2>
+      <div class="carousel">
+        <div class="carousel__track" data-track></div>
+        <button class="arrow arrow--prev carousel__prev" type="button" data-carousel-prev aria-label="Назад"></button>
+        <button class="arrow carousel__next" type="button" data-carousel-next aria-label="Дальше"></button>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="data/catalog.js"></script>
+  <script src="data/preorder.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/sheet.js?v=checkout3"></script>
+</body>
+</html>

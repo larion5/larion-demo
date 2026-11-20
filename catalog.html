@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout3"><script src="js/demo.js?v=checkout3"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Каталог | Larion</title>
+  <link rel="stylesheet" href="css/style.css?v=top1">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main class="page">
+    <div class="catalog-head"><h1 class="title">Каталог</h1></div>
+    <nav class="cats" data-cats aria-label="Категории"></nav>
+    <nav class="crumbs" data-crumbs aria-label="Хлебные крошки"></nav>
+    <div class="toolbar">
+      <p class="cat-descr" data-cat-descr hidden></p>
+      <input type="search" data-search placeholder="Поиск" aria-label="Поиск по каталогу">
+      <select data-sort aria-label="Сортировка">
+        <option value="default">По умолчанию</option>
+        <option value="price-asc">Цена: по возрастанию</option>
+        <option value="price-desc">Цена: по убыванию</option>
+        <option value="name-asc">Название: А—Я</option>
+        <option value="name-desc">Название: Я—А</option>
+        <option value="newest">Сперва новые</option>
+        <option value="oldest">Сперва старые</option>
+      </select>
+    </div>
+    <div class="products" data-catalog></div>
+    <p class="empty" hidden>Ничего не нашлось</p>
+    <div class="load-more" data-load-more hidden><button class="btn btn--outline" type="button">Загрузить ещё</button></div>
+
+    <section class="catalog-preorder">
+      <p>Нет нужной жабки в&nbsp;наличии? Оформите предзаказ! Выберите дизайн, окрас и&nbsp;мордочку жабки из&nbsp;каталога предзаказа</p>
+      <a class="btn" href="#" data-todo>Собрать свою жабку</a>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="data/catalog.js"></script>
+  <script src="data/photo-focus.js"></script>
+  <script src="js/focus.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/sheet.js?v=checkout3"></script>
+</body>
+</html>

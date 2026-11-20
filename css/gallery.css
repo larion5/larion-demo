@@ -1,0 +1,92 @@
+/* Галерея: gallery.html, логика в js/gallery.js, фото в data/gallery.js */
+.gal-head { padding: 40px var(--gutter) 0; text-align: center; }
+
+/* Вкладки разделов */
+.gal-tabs { position: sticky; top: var(--header-h); z-index: 5; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 20px var(--gutter); background: var(--paper); scroll-margin-top: var(--header-h); }
+.gal-tabs a { padding: 10px 20px; border: 1px solid #d4d1c6; border-radius: 999px; background: var(--white); font-size: 18px; line-height: 1.2; transition: background .15s, border-color .15s; }
+.gal-tabs a:hover { border-color: var(--ink); }
+.gal-tabs a.is-active { border-color: var(--olive); background: var(--olive); }
+
+.gal-part { padding: 0 var(--gutter); }
+.gal-part[hidden] { display: none; }
+.gal-lead { max-width: 760px; margin: 0 auto 28px; text-align: center; }
+.gal-empty { max-width: 560px; margin: 40px auto; padding: 40px 24px; border-radius: var(--radius); background: #ebe8e0; color: #6c6a64; text-align: center; }
+
+/* Кнопка-фото: клик открывает просмотр */
+.gal-photo { display: block; width: 100%; padding: 0; border: 0; overflow: hidden; border-radius: var(--radius); background: #e6e3da; cursor: zoom-in; }
+.gal-photo img { display: block; width: 100%; height: auto; transition: transform .3s ease; }
+.gal-photo:hover img { transform: scale(1.03); }
+
+/* Фото-охота: колонки, фото не обрезаются */
+.gal-hunt { columns: 3 280px; column-gap: 16px; }
+.gal-hunt .gal-photo { margin-bottom: 16px; break-inside: avoid; }
+
+/* Мистери фрокс: коллекция — заголовок с датой, текст, ряд квадратных фото */
+.gal-mystery { display: flex; flex-direction: column; gap: 48px; }
+.gal-col__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.gal-col__head h2, .gal-ex h2 { margin: 0; font-family: inherit; font-size: 26px; font-weight: 700; }
+.gal-col__date { display: inline-block; padding: 3px 12px; border-radius: 999px; background: var(--olive); font-size: 15px; }
+.gal-col__text { max-width: 760px; margin: 10px 0 0; }
+/* обложки слева (span считает js/gallery.js по размеру фото), квадратики справа от них и дальше ниже */
+.gal-col__body { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-auto-flow: row dense; align-items: start; gap: 12px; margin-top: 16px; }
+.gal-col__photos { display: contents; }
+.gal-photo--sq { aspect-ratio: 1; }
+.gal-photo--sq img { height: 100%; object-fit: cover; }
+
+/* Эксклюзив: карточки */
+.gal-exclusive { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.gal-ex { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.gal-ex p { margin: 0; }
+.gal-photo--card { position: relative; aspect-ratio: 3 / 4; }
+.gal-photo--card img { height: 100%; object-fit: cover; }
+.gal-ex__count { position: absolute; right: 10px; bottom: 10px; padding: 4px 10px; border-radius: 999px; background: rgba(255, 255, 255, .88); font-size: 13px; }
+
+@media (max-width: 639px) {
+  .gal-head { padding-top: 24px; }
+  .gal-tabs { flex-wrap: nowrap; gap: 4px; padding: 12px 6px; }
+  .gal-tabs a { flex: none; padding: 8px clamp(6px, 2vw, 11px); font-size: clamp(11px, 4vw, 14px); white-space: nowrap; }
+  .gal-hunt { columns: 2; column-gap: 10px; }
+  .gal-hunt .gal-photo { margin-bottom: 10px; }
+  .gal-col__body { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+}
+
+/* приписка о повторе и секретная жабка под спойлером */
+.gal-lead + .gal-note { margin-top: -16px; padding: 10px 16px; border-radius: 14px; background: #ebe8e0; font-size: 16px; }
+.gal-secret { position: relative; cursor: pointer; }
+.gal-secret img, .gal-secret video { filter: blur(18px) saturate(.6); transform: scale(1.15); transition: filter .4s ease, transform .4s ease; }
+.gal-secret:hover img { transform: scale(1.15); }
+.gal-secret__label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px; background: rgba(42, 42, 42, .35); color: #fff; font-size: 18px; text-align: center; transition: opacity .3s; }
+.gal-secret__label small { font-size: 13px; opacity: .85; }
+.gal-secret.is-open { cursor: zoom-in; }
+.gal-secret.is-open img, .gal-secret.is-open video { filter: none; transform: none; }
+.gal-secret.is-open .gal-secret__label { opacity: 0; pointer-events: none; }
+.gal-secret video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* общее фото коллекции — крупно над жабками */
+.gal-col__cover { max-width: 560px; margin-top: 16px; cursor: zoom-in; }
+/* видео в карточке эксклюзива */
+.gal-video { position: relative; cursor: pointer; }
+.gal-video video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.gal-video__sound { position: absolute; left: 10px; bottom: 10px; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, .88); font-size: 16px; }
+/* второе общее фото (ряд всех фигурок) и имена жабок под плитками */
+.gal-col__cover2 { max-width: 760px; margin-top: 12px; cursor: zoom-in; }
+.gal-named { margin: 0; }
+.gal-named figcaption { margin-top: 6px; font-size: 15px; text-align: center; }
+/* общие фото коллекции — слева, занимают несколько колонок сетки */
+.gal-col__cover, .gal-col__cover2 { max-width: none; margin: 0; grid-column: 1 / span var(--span, 3); grid-row: span var(--rows, 3); }
+/* ссылка «напишите мне» и плашка про секретных жабок */
+.gal-link { text-decoration: underline; text-underline-offset: 3px; }
+.gal-link:hover { color: var(--olive-dark, #6b7a2a); }
+/* «Секретные жабки не повторяются» — зелёной подложкой, как срок изготовления в предзаказе */
+.gal-mark { font-weight: 400; padding: 0 6px; border-radius: 6px; background: var(--olive); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+/* короткий текст эксклюзива на больших экранах в одну строку */
+.gal-lead--wide { max-width: none; }
+
+/* Телефон: в мистери фрокс плитки помельче — по три в ряд, общие фото коллекции на всю ширину (заметка Леры) */
+@media (max-width: 639px) {
+  .gal-col__body { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .gal-col__cover, .gal-col__cover2 { grid-column: 1 / -1; grid-row: auto; }
+  .gal-named figcaption { margin-top: 3px; font-size: 12px; line-height: 1.2; }
+  .gal-photo { border-radius: 12px; }
+  .gal-secret__label { font-size: 13px; padding: 4px; }
+  .gal-secret__label small { display: none; }
+}

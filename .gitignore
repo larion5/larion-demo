@@ -1,0 +1,8 @@
+server/
+api/
+admin/
+*.zip
+*.jsonl
+.env*
+notes.json
+private-backups/
