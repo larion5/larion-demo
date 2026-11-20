@@ -258,7 +258,7 @@
 
   // Галерея «Фото-охота» на главной
   var photos = Array.prototype.slice.call(document.querySelectorAll('.mosaic img'));
-  var sources = photos.map(function (p) { return p.getAttribute('src'); });
+  var sources = photos.map(function (p) { return p.dataset.photoSrc || p.getAttribute('src'); });
   photos.forEach(function (p, i) {
     p.tabIndex = 0;
     p.setAttribute('role', 'button');

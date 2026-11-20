@@ -277,6 +277,7 @@
     setTimeout(function () { word.remove(); }, 1000);
   }
   var tapped = null;
+  var hideTimer;
   var lastPointer = '';
   field.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType; });
   field.addEventListener('click', function (e) {
@@ -288,11 +289,20 @@
     if (touchInput && !hit && tapped && Math.hypot(e.clientX - tapped.x, e.clientY - tapped.y) < 22) hit = tapped.spot;
     if (hit && hit.guest) {
       e.preventDefault();
-      if (!touchInput || (tapped && tapped.spot === hit)) croak(hit);
-      if (touchInput) { tapped = { spot: hit, x: e.clientX, y: e.clientY }; setHover(hit); }
+      if (!touchInput) { croak(hit); return; }
+      clearTimeout(hideTimer);
+      if (tapped && tapped.spot === hit) {
+        croak(hit);
+        hideTimer = setTimeout(function () {
+          tapped = null;
+          setHover(null);
+        }, 2000);
+      }
+      tapped = { spot: hit, x: e.clientX, y: e.clientY };
+      setHover(hit);
       return;
     }
-    if (touchInput) { tapped = null; setHover(null); }
+    if (touchInput) { clearTimeout(hideTimer); tapped = null; setHover(null); }
     if (keyboard) return;
     if (!hit && hitFlower(e.clientX, e.clientY)) { e.preventDefault(); location.href = FLOWER_HREF; return; }
     // клик мимо жабки (по кочке) ничего не открывает
@@ -303,6 +313,7 @@
   });
   field.addEventListener('pointermove', function (e) {
     if (e.pointerType === 'touch') return;
+    clearTimeout(hideTimer);
     tapped = null;
     var s = hitSpot(e.clientX, e.clientY);
     setHover(s, !s && hitFlower(e.clientX, e.clientY));

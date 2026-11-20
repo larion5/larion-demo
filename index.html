@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="ru">
-<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile5"><script src="js/demo.js?v=checkout3"></script>
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile6"><script src="js/demo.js?v=mobile6"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#31382c">
   <title>Larion | Керамические жабки</title>
   <meta name="description" content="Керамические жабки размером с раффаэллку, а ещё с попами и шляпками. Декоративные интерьерные статуэтки ручной работы.">
-  <link rel="stylesheet" href="css/style.css?v=availability2">
+  <link rel="stylesheet" href="css/style.css?v=mobile6">
   <link rel="preload" as="image" href="assets/img/swamp/moss-bright.webp">
   <link rel="preload" as="image" href="assets/img/swamp/moss-olive.webp">
   <link rel="preload" as="image" href="assets/img/swamp/moss-lime.webp">
@@ -17,8 +17,8 @@
   <script defer src="data/photo-focus.js"></script>
   <script defer src="js/focus.js"></script>
   <script defer src="js/layout.js?v=mobile3"></script>
-  <script defer src="js/swamp.js?v=croak2"></script>
-  <script defer src="js/lightbox.js?v=mobile5"></script>
+  <script defer src="js/swamp.js?v=mobile6"></script>
+  <script defer src="js/lightbox.js?v=mobile6"></script>
   <script defer src="js/cart.js?v=mobile3"></script>
   <script defer src="js/shop.js?v=mobile5"></script>
   <script defer src="js/builder-teaser.js?v=mobile3"></script>
@@ -57,13 +57,15 @@
     </section>
 
     <!-- Предзаказ -->    <section class="preorder" id="preorder">
-      <img class="preorder__img" src="assets/img/home/preorder-original.webp" width="1920" height="2560" decoding="async" alt="Голубая жабка на мху" loading="lazy" fetchpriority="low">
+      <div class="preorder__photo">
+        <img class="preorder__img" src="assets/img/home/preorder-original.webp" width="1920" height="2560" decoding="async" alt="Голубая жабка на мху" loading="lazy" fetchpriority="low">
+        <img class="preorder__sticker" src="assets/img/stickers/preorder.png" alt="" loading="lazy">
+      </div>
       <div class="preorder__text">
         <h2 class="title">Предзаказ</h2>
         <p>Нет нужной жабки в&nbsp;наличии? Оформите предзаказ! Выберите дизайн, окрас и&nbsp;мордочку жабки из&nbsp;каталога предзаказа</p>
         <a class="btn" href="preorder.html">Собрать свою жабку</a>
       </div>
-      <img class="preorder__sticker" src="assets/img/stickers/preorder.png" alt="" loading="lazy">
     </section>
 
     <!-- Обо мне -->
@@ -78,8 +80,8 @@
         <p>Нам всем иногда нужно остановиться, сесть на&nbsp;камень у&nbsp;воды, просто побыть собой. И, может быть, немного поквакать</p>
       </div>
       <div class="about__photo">
-        <img class="about__img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-full-src="assets/img/home/about.PNG" width="1088" height="1445" decoding="async" alt="Лера Ларион среди цветущих веток" fetchpriority="low">
-        <noscript><img class="about__img" src="assets/img/home/about.PNG" width="1088" height="1445" alt="Лера Ларион среди цветущих веток" loading="lazy"></noscript>
+        <img class="about__img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-full-src="assets/img/home/about.PNG" data-mobile-src="assets/img/home/about-mobile.webp" width="1088" height="1445" decoding="async" alt="Лера Ларион среди цветущих веток" fetchpriority="low">
+        <noscript><picture><source media="(max-width: 767px)" srcset="assets/img/home/about-mobile.webp"><img class="about__img" src="assets/img/home/about.PNG" width="1088" height="1445" alt="Лера Ларион среди цветущих веток" loading="lazy"></picture></noscript>
         <img class="about__sticker" src="assets/img/stickers/hearts.png" alt="" loading="lazy">
       </div>
     </section>
@@ -87,43 +89,43 @@
     <section class="triple">
       <h3 class="subtitle">Размер фигурок</h3>
       <div class="triple__grid">
-        <figure class="figure"><img src="assets/img/home/size-1.webp" width="960" height="1280" srcset="assets/img/home/size-1.webp-preview.webp 465w, assets/img/home/size-1.webp 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 1 см" loading="lazy"><figcaption>Жабки помемше (1&nbsp;см)</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/size-2.jpeg" width="1080" height="1440" srcset="assets/img/home/size-2.jpeg-preview.webp 465w, assets/img/home/size-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 2 см" loading="lazy"><figcaption>Жабки (2&nbsp;см)</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/size-3.jpg" width="960" height="1280" srcset="assets/img/home/size-3.jpg-preview.webp 465w, assets/img/home/size-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 5 см" loading="lazy"><figcaption>Жабки побольше (5&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/size-1.webp" width="960" height="1280" data-photo-srcset="assets/img/home/size-1.webp-preview.webp 465w, assets/img/home/size-1.webp 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 1 см" loading="lazy"><figcaption>Жабки помемше (1&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/size-2.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/size-2.jpeg-preview.webp 465w, assets/img/home/size-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 2 см" loading="lazy"><figcaption>Жабки (2&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/size-3.jpg" width="960" height="1280" data-photo-srcset="assets/img/home/size-3.jpg-preview.webp 465w, assets/img/home/size-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 5 см" loading="lazy"><figcaption>Жабки побольше (5&nbsp;см)</figcaption></figure>
       </div>
     </section>
 
     <section class="triple">
       <h3 class="subtitle">Материал</h3>
       <div class="triple__grid">
-        <figure class="figure"><img src="assets/img/home/material-1.jpeg" width="1080" height="1440" srcset="assets/img/home/material-1.jpeg-preview.webp 465w, assets/img/home/material-1.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Упаковка керамической массы" loading="lazy"><figcaption>Высокотемпературная немецкая керамическая масса</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/material-2.jpeg" width="1080" height="1440" srcset="assets/img/home/material-2.jpeg-preview.webp 465w, assets/img/home/material-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Палитра с образцами глазури" loading="lazy"><figcaption>Глазури для&nbsp;керамики</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/material-3.jpg" width="960" height="1280" srcset="assets/img/home/material-3.jpg-preview.webp 465w, assets/img/home/material-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Фигурка с золотом на ладони" loading="lazy"><figcaption>А&nbsp;иногда&nbsp;— настоящее золото</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/material-1.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/material-1.jpeg-preview.webp 465w, assets/img/home/material-1.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Упаковка керамической массы" loading="lazy"><figcaption>Высокотемпературная немецкая керамическая масса</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/material-2.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/material-2.jpeg-preview.webp 465w, assets/img/home/material-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Палитра с образцами глазури" loading="lazy"><figcaption>Глазури для&nbsp;керамики</figcaption></figure>
+        <figure class="figure"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/material-3.jpg" width="960" height="1280" data-photo-srcset="assets/img/home/material-3.jpg-preview.webp 465w, assets/img/home/material-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Фигурка с золотом на ладони" loading="lazy"><figcaption>А&nbsp;иногда&nbsp;— настоящее золото</figcaption></figure>
       </div>
     </section>
 
     <section class="triple">
       <h3 class="subtitle">Изготовление</h3>
       <div class="triple__grid triple__grid--four">
-        <figure class="figure"><video data-src="assets/video/making-1.mp4" muted loop playsinline preload="none"></video><figcaption>Ручная лепка</figcaption></figure>
-        <figure class="figure"><video data-src="assets/video/making-2.mp4" muted loop playsinline preload="none"></video><figcaption>Роспись</figcaption></figure>
-        <figure class="figure"><video data-src="assets/video/making-3.mp4" muted loop playsinline preload="none"></video><figcaption>Обжиг на&nbsp;1200°С</figcaption></figure>
-        <figure class="figure"><video data-src="assets/video/making-4.mp4" muted loop playsinline preload="none"></video><figcaption>Упаковка</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-1.mp4" muted loop playsinline webkit-playsinline preload="none"></video><figcaption>Ручная лепка</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-2.mp4" muted loop playsinline webkit-playsinline preload="none"></video><figcaption>Роспись</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-3.mp4" muted loop playsinline webkit-playsinline preload="none"></video><figcaption>Обжиг на&nbsp;1200°С</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-4.mp4" muted loop playsinline webkit-playsinline preload="none"></video><figcaption>Упаковка</figcaption></figure>
       </div>
     </section>
 
     <!-- Фото-охота -->
     <div class="section-head" id="gallery"><h2 class="title">Фото-охота</h2></div>
     <section class="mosaic" aria-label="Фотографии жабок на природе">
-      <img class="is-tall" style="object-position:50% 100%" src="assets/img/home/gallery-1.webp" width="1080" height="1440" srcset="assets/img/home/gallery-1.webp-preview.webp 465w, assets/img/home/gallery-1.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img style="object-position:50% 74%" src="assets/img/home/gallery-2.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-2.jpeg-preview.webp 465w, assets/img/home/gallery-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img class="is-tall" style="object-position:50% 66%" src="assets/img/home/gallery-4.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-4.jpeg-preview.webp 465w, assets/img/home/gallery-4.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-3.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-3.jpeg-preview.webp 465w, assets/img/home/gallery-3.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-5.webp" width="1280" height="960" srcset="assets/img/home/gallery-5.webp-preview.webp 620w, assets/img/home/gallery-5.webp 1280w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img class="is-tall" style="object-position:50% 25%" src="assets/img/home/gallery-7.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-7.jpeg-preview.webp 465w, assets/img/home/gallery-7.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-8.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-8.jpeg-preview.webp 465w, assets/img/home/gallery-8.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-6.webp" width="1080" height="1440" srcset="assets/img/home/gallery-6.webp-preview.webp 465w, assets/img/home/gallery-6.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-9.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-9.jpeg-preview.webp 465w, assets/img/home/gallery-9.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 100%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-1.webp" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-1.webp-preview.webp 465w, assets/img/home/gallery-1.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img style="object-position:50% 74%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-2.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-2.jpeg-preview.webp 465w, assets/img/home/gallery-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 66%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-4.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-4.jpeg-preview.webp 465w, assets/img/home/gallery-4.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-3.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-3.jpeg-preview.webp 465w, assets/img/home/gallery-3.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-5.webp" width="1280" height="960" data-photo-srcset="assets/img/home/gallery-5.webp-preview.webp 620w, assets/img/home/gallery-5.webp 1280w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 25%" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-7.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-7.jpeg-preview.webp 465w, assets/img/home/gallery-7.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-8.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-8.jpeg-preview.webp 465w, assets/img/home/gallery-8.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-6.webp" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-6.webp-preview.webp 465w, assets/img/home/gallery-6.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-photo-src="assets/img/home/gallery-9.jpeg" width="1080" height="1440" data-photo-srcset="assets/img/home/gallery-9.jpeg-preview.webp 465w, assets/img/home/gallery-9.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
     </section>
     <div class="btn-row mosaic-more"><a class="btn" href="gallery.html">Смотреть всю галерею</a></div>
 
@@ -151,31 +153,39 @@
         if (video.hasAttribute('src')) return;
         var src = video.dataset.src;
         video.poster = src.replace(/\.mp4$/, '-poster.webp');
+        video.defaultMuted = video.muted = true;
         video.preload = 'auto';
-        video.src = mobile.matches ? src.replace(/\.mp4$/, '-mobile.mp4') : src;
+        video.src = mobile.matches ? src.replace(/\.mp4$/, '-quick.mp4') : src;
       }
-      var preload = new IntersectionObserver(function (entries, observer) {
+      function play(video) {
+        prepare(video);
+        video.play().catch(function () {});
+      }
+      function preloadNearViewport(entries, observer) {
         entries.forEach(function (entry) {
           if (!entry.isIntersecting) return;
           prepare(entry.target);
           observer.unobserve(entry.target);
         });
-      }, { rootMargin: '680px 0px' });
+      }
+      var preload = new IntersectionObserver(preloadNearViewport, { rootMargin: mobile.matches ? '1000px 0px' : '680px 0px' });
+      var preloadLater = new IntersectionObserver(preloadNearViewport, { rootMargin: '200px 0px' });
       var playback = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           var video = entry.target;
+          video.autoplay = entry.isIntersecting;
           if (!entry.isIntersecting) {
             video.pause();
             return;
           }
-          prepare(video);
-          video.play().catch(function (error) {
-            if (error.name === 'NotAllowedError') video.controls = true;
-          });
+          play(video);
         });
       });
-      videos.forEach(function (video) {
-        preload.observe(video);
+      videos.forEach(function (video, index) {
+        video.addEventListener('canplay', function () {
+          if (video.autoplay && video.paused) play(video);
+        });
+        (mobile.matches && index >= 2 ? preloadLater : preload).observe(video);
         playback.observe(video);
       });
       document.addEventListener('DOMContentLoaded', function () {
@@ -185,7 +195,18 @@
             if (!entry.isIntersecting) return;
             var photo = entry.target;
             observer.unobserve(photo);
-            if (photo.dataset.fullSrc) photo.src = photo.dataset.fullSrc;
+            if (photo.dataset.photoSrc) {
+              photo.srcset = photo.dataset.photoSrcset;
+              photo.src = photo.dataset.photoSrc;
+            }
+            if (photo.dataset.fullSrc) {
+              if (matchMedia('(max-width: 767px)').matches) {
+                photo.fetchPriority = 'auto';
+                photo.src = photo.dataset.mobileSrc;
+              } else {
+                photo.src = photo.dataset.fullSrc;
+              }
+            }
             if (photo.complete) return;
             photo.classList.add('is-photo-loading');
             function loaded() {
@@ -196,7 +217,7 @@
             photo.addEventListener('load', loaded);
             photo.addEventListener('error', loaded);
           });
-        });
+        }, { rootMargin: '80px 0px' });
         photos.forEach(function (photo) { placeholders.observe(photo); });
       });
     })();

@@ -63,6 +63,10 @@
  document.addEventListener('click',function(e){var a=e.target.closest('a');if(!a)return;var href=a.getAttribute('href')||'';if(/^(https?:|mailto:|tel:|tg:)/i.test(href)||href==='#demo-contact'||/^(admin|api|server)\//.test(href)){e.preventDefault();e.stopImmediatePropagation();say('Демо: внешние переходы, связь и серверные действия отключены.');}},true);
  document.addEventListener('DOMContentLoaded',function(){
   var bar=document.createElement('div');bar.className='demo-bar';bar.innerHTML='<b>ДЕМО LARION</b><span>Только проверка интерфейса · без оплаты и отправки заказов</span><button type="button" data-demo-fill>Заполнить пример</button><button type="button" data-demo-reset>Сбросить демо</button>';document.body.prepend(bar);
+  var topCover=document.createElement('div');
+  topCover.className='demo-top-cover';
+  topCover.setAttribute('aria-hidden','true');
+  document.body.prepend(topCover);
   function updateBarHeight(){
    document.documentElement.style.setProperty('--demo-bar-height',bar.offsetHeight+'px');
   }
