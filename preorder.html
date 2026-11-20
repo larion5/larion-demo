@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="ru">
-<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=gallery4"><script src="js/demo.js?v=checkout3"></script>
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile5"><script src="js/demo.js?v=checkout3"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#31382c">
   <title>Предзаказ жабки | Larion</title>
   <meta name="description" content="Выберите позу, мордочку и окрас по фото — Лера слепит жабку вручную.">
-  <link rel="stylesheet" href="css/style.css?v=gallery4">
-  <link rel="stylesheet" href="css/preorder.css">
+  <link rel="stylesheet" href="css/style.css?v=mobile5">
+  <link rel="stylesheet" href="css/preorder.css?v=availability2">
 </head>
-<body data-page-script="js/preorder.js?v=mobile3">
+<body data-preorder-status="open" data-page-script="js/preorder.js?v=mobile3">
   <div id="site-header"></div>
 
   <main class="page">
@@ -66,12 +66,30 @@
     </section>
   </main>
 
+  <template id="preorder-paused">
+    <div class="pre-head"><h1 class="title">Предзаказ</h1></div>
+    <div class="availability-note">
+      <p>Сейчас заказы и предзаказы не принимаются. Посмотрим, что есть в <a href="catalog.html">наличии</a>?</p>
+    </div>
+    <div class="pre-pause-art">
+      <span aria-hidden="true">пупу</span>
+      <img src="assets/img/home/frog-in-water.webp" width="960" height="1280" alt="Жабка выглядывает из воды" decoding="async">
+      <span aria-hidden="true">пуууууууууууууууууууу</span>
+    </div>
+  </template>
+  <script>
+    if (document.body.dataset.preorderStatus === 'paused') {
+      document.querySelector('main').replaceChildren(document.querySelector('#preorder-paused').content.cloneNode(true));
+      delete document.body.dataset.pageScript;
+    }
+  </script>
+
   <div id="site-footer"></div>
 
-  <script src="data/catalog.js"></script>
+  <script src="data/catalog.js?v=mobile5"></script>
   <script src="data/preorder.js"></script>
   <script src="js/layout.js?v=mobile3"></script>
-  <script src="js/lightbox.js?v=gallery4"></script>
-  <script src="js/sheet.js?v=gallery4"></script>
+  <script src="js/lightbox.js?v=mobile5"></script>
+  <script src="js/sheet.js?v=mobile5"></script>
 </body>
 </html>

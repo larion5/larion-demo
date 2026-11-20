@@ -90,6 +90,8 @@
     var search = document.querySelector('[data-search]');
     var sort = document.querySelector('[data-sort]');
     var more = document.querySelector('[data-load-more]');
+    var searchEmpty = document.querySelector('[data-search-empty]');
+    var stockEmpty = document.querySelector('[data-stock-empty]');
 
     // Разделы с нарисованными иконками, как в подменю «каталог». Первым — «Все»: четыре иконки квадратиком.
     var allIcons = data.categories.slice(0, 4).map(function (c) { return '<img src="' + (c.menuIcon || c.image) + '" alt="">'; }).join('');
@@ -138,7 +140,8 @@
       list = SORTERS[state.sort](list);
 
       catalog.innerHTML = list.slice(0, state.shown).map(cardHtml).join('');
-      catalog.nextElementSibling.hidden = list.length > 0;
+      searchEmpty.hidden = !q || list.length > 0;
+      stockEmpty.hidden = !!q || list.length > 0;
       more.hidden = list.length <= state.shown;
       window.LarionCart.refresh();
     };

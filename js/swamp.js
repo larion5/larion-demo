@@ -19,13 +19,7 @@
     bright: { src: DIR + 'moss-bright.webp', w: 353, h: 311 },
     lime: { src: DIR + 'moss-lime.webp', w: 366, h: 313 }
   };
-  // Жабки «для красоты»: появляются, когда жабагочи в наличии не хватает на все места.
-  var DECOR = [
-    { src: DIR + 'decor-2.webp', w: 420, h: 394 },
-    { src: DIR + 'decor-3.webp', w: 420, h: 396 },
-    { src: DIR + 'decor-1.webp', w: 420, h: 296 },
-    { src: DIR + 'decor-4.webp', w: 420, h: 349 }
-  ];
+  var FROG_IDS = ['146011476013', '235460268133', '749964285913'];
   // Цветочки на булавках: flower-1.png … flower-7.png — 1 клевер, 2 оранжевая звёздочка, 3 красный с завитком,
   // 4 белый, 5 розовый, 6 коралловый, 7 сиреневая звёздочка (вырезаны с фото, проволочка дорисована).
   function flowerSrc(n) { return DIR + 'flower-' + n + '.webp'; }
@@ -72,8 +66,6 @@
   var spots = [];
 
   function inStock(item) { var p = product(item.id); return p && p.stock !== 0; }
-  // Жабка свободна: есть в наличии и ещё не разобрана в корзину.
-  function isFree(f) { return inStock(f) && (!window.LarionCart || window.LarionCart.canAdd(f.id)); }
 
   // Картинки жабки и шляпы в одном блоке. Размеры в единицах слоёв, потом в процентах блока.
   function frogBox(frog, hat) {
@@ -93,23 +85,17 @@
     return { html: html, W: W, H: H, left: left, top: top };
   }
 
-  function decorLayer(d) { return { src: d.src, w: d.w, h: d.h, ax: d.w / 2, ay: 0 }; }
-
-  // Гость кочки: жабагочи ({frog}), жабка для красоты ({decor}) или воткнутая шляпа (null + stuck).
+  // На каждой кочке постоянно сидит одна и та же жабка.
   function setGuest(s, guest) {
     s.guest = guest;
     s.box = null;
     s.hatOnly = null;
     var href = null, label = '';
-    if (guest && guest.decor) {
-      s.box = frogBox(decorLayer(guest.decor), null);
-      href = 'catalog.html?cat=zhabagochi';
-      label = 'Жабка во мху. Посмотреть жабагочи в наличии';
-    } else if (guest && guest.frog) {
+    if (guest) {
       var fh = s.hill.frogHat == null ? null : layers.hats[s.hill.frogHat];
-      s.box = frogBox(guest.frog, fh);
-      href = 'product.html?id=' + guest.frog.id;
-      label = product(guest.frog.id).title + ' прячется во мху. Открыть карточку';
+      var portrait = Object.assign({}, guest, { src: DIR + 'frog-' + guest.id + '.webp' });
+      s.box = frogBox(portrait, fh);
+      label = product(guest.id).title + ' прячется во мху. Попросить квакнуть';
     } else if (s.hill.stuck != null) {
       var hat = layers.hats[s.hill.stuck];
       if (hat && inStock(hat)) {
@@ -120,8 +106,8 @@
       }
     }
     s.holder.innerHTML = s.box ? s.box.html : '';
-    if (href) { s.el.setAttribute('href', href); s.el.setAttribute('aria-label', label); s.el.removeAttribute('tabindex'); }
-    else { s.el.removeAttribute('href'); s.el.removeAttribute('aria-label'); s.el.setAttribute('tabindex', '-1'); }
+    if (href) s.el.setAttribute('href', href);
+    if (label) s.el.setAttribute('aria-label', label);
   }
 
   // Верх купола кочки на доле ширины t (0…1), в долях высоты картинки.
@@ -148,8 +134,8 @@
     if (s.guest) {
       // Жабка уже кочки и сидит за ней: в покое из-за кочки виден только краешек головы (REST доли высоты),
       // при подглядывании — глаза, при наведении — почти вся мордочка.
-      var f = s.guest.frog || decorLayer(s.guest.decor);
-      var bodyH = (s.guest.frog && BODY_BOTTOM[f.id]) || f.h;
+      var f = s.guest;
+      var bodyH = BODY_BOTTOM[f.id] || f.h;
       var k = Math.min(w * 0.62, FW * FROG_SIZE, h * 0.95 * f.w / bodyH) / f.w;
       var frogH = bodyH * k;
       var REST = 0.12;
@@ -159,7 +145,6 @@
       g.style.top = (h * 0.03 - frogH * REST - (f.ay - b.top) * k) + 'px';
       g.style.setProperty('--peek', (-frogH * (0.46 - REST)) + 'px');
       g.style.setProperty('--up', (-frogH * (0.70 - REST)) + 'px');
-      g.style.setProperty('--gone', (frogH * 0.45) + 'px');
     } else {
       // Шляпа воткнута штырьком в макушку кочки.
       var hat = s.hatOnly;
@@ -179,7 +164,6 @@
     s.el.style.zIndex = s.hill.z;
     s.el.style.aspectRatio = moss.w + ' / ' + moss.h;
     draw(s);
-    s.drawn = true;
   }
 
   // Высота куста: верх самой высокой кочки плюс место, куда жабка поднимается.
@@ -193,7 +177,8 @@
 
   function build() {
     HILLS.forEach(function (hill) {
-      var spot = document.createElement('a');
+      var spot = document.createElement(hill.seat ? 'button' : 'a');
+      if (hill.seat) spot.type = 'button';
       spot.className = 'swamp__spot' + (hill.seat ? ' swamp__spot--seat' : '');
       var flowers = hill.flowers || [];
       var flowerImg = function (f, i) {
@@ -210,54 +195,12 @@
       [].forEach.call(spot.querySelectorAll('.swamp__flower'), function (img) { imgs[+img.getAttribute('data-i')] = img; });
       spots.push({ el: spot, hill: hill, holder: spot.querySelector('.swamp__frog'), flowers: imgs, guest: null });
     });
-    spots.forEach(function (s) { if (!s.hill.seat) { setGuest(s, null); place(s); } });
-    seat(false);
+    spots.forEach(function (s) {
+      var frog = layers.frogs.find(function (item) { return item.id === FROG_IDS[s.hill.seat - 1]; });
+      setGuest(s, frog || null);
+      place(s);
+    });
     fitField();
-  }
-
-  function sameGuest(a, b) {
-    if (!a || !b) return a === b;
-    return a.frog ? a.frog === b.frog : a.decor === b.decor;
-  }
-
-  // Рассаживает жабок по местам seat. Свободные жабки остаются там, где сидели;
-  // новые свободные занимают пустые места по порядку, а оставшиеся места — жабки для красоты.
-  function seat(animate) {
-    var seats = spots.filter(function (s) { return s.hill.seat; }).sort(function (a, b) { return a.hill.seat - b.hill.seat; });
-    var free = layers.frogs.filter(isFree);
-    var plan = seats.map(function (s) { return s.guest && s.guest.frog && free.indexOf(s.guest.frog) !== -1 ? s.guest : null; });
-    var used = plan.filter(Boolean).map(function (g) { return g.frog; });
-    free.forEach(function (f) {
-      if (used.indexOf(f) !== -1) return;
-      var i = plan.indexOf(null);
-      if (i !== -1) { plan[i] = { frog: f }; used.push(f); }
-    });
-    // Жабки для красоты: та же, что уже сидела, или первая не занятая.
-    var decorUsed = [];
-    seats.forEach(function (s, i) {
-      if (plan[i] || !s.guest || !s.guest.decor) return;
-      plan[i] = s.guest;
-      decorUsed.push(s.guest.decor);
-    });
-    seats.forEach(function (s, i) {
-      if (plan[i]) return;
-      var d = DECOR.filter(function (x) { return decorUsed.indexOf(x) === -1; })[0];
-      if (d) { plan[i] = { decor: d }; decorUsed.push(d); }
-    });
-
-    seats.forEach(function (s, i) {
-      var next = plan[i];
-      if (s.drawn && sameGuest(s.guest, next)) return;
-      if (!animate || !s.drawn) { setGuest(s, next); place(s); return; }
-      // Жабка ныряет за кочку, потом вылезает новая.
-      s.el.classList.remove('is-up', 'is-peek');
-      s.el.classList.add('is-gone');
-      setTimeout(function () {
-        setGuest(s, next);
-        place(s);
-        setTimeout(function () { s.el.classList.remove('is-gone'); }, 350);
-      }, 550);
-    });
   }
 
   // Наводить и нажимать можно только на саму жабку (или шляпу), а не на кочку вокруг неё.
@@ -283,7 +226,7 @@
   function hitSpot(x, y) {
     for (var i = spots.length - 1; i >= 0; i--) {
       var s = spots[i];
-      if (!s.el.hasAttribute('href')) continue;
+      if (!s.guest && !s.el.hasAttribute('href')) continue;
       var on = [].some.call(s.holder.querySelectorAll('.swamp__img'), function (img) { return alphaAt(img, x, y) > 40; });
       if (!on) continue;
       // закрыта ли эта точка мхом своей кочки или кочек, что ближе к зрителю
@@ -319,10 +262,38 @@
     hovered = s;
     if (s) s.el.classList.add('is-up');
   }
+  function croak(s) {
+    var directions = ['26px', '-26px', '0px'];
+    var direction = s.croakDirection || 0;
+    s.croakDirection = (direction + 1) % directions.length;
+    var word = document.createElement('span');
+    word.className = 'swamp__croak';
+    word.textContent = 'КВА';
+    word.setAttribute('aria-hidden', 'true');
+    word.style.setProperty('--croak-drift', directions[direction]);
+    s.el.insertBefore(word, s.holder);
+    word.style.left = (parseFloat(s.holder.style.left) + parseFloat(s.holder.style.width) / 2) + 'px';
+    word.style.top = (parseFloat(s.holder.style.top) + parseFloat(s.holder.style.getPropertyValue('--up'))) + 'px';
+    setTimeout(function () { word.remove(); }, 1000);
+  }
+  var tapped = null;
+  var lastPointer = '';
+  field.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType; });
   field.addEventListener('click', function (e) {
     var spot = e.target.closest('.swamp__spot');
-    if (e.detail === 0 && spot && spot.hasAttribute('href')) return; // клавиатура
-    var hit = hitSpot(e.clientX, e.clientY);
+    var keyboard = e.detail === 0;
+    if (keyboard && spot && spot.hasAttribute('href')) return;
+    var hit = keyboard ? spots.find(function (s) { return s.el === spot; }) : hitSpot(e.clientX, e.clientY);
+    var touchInput = !keyboard && (e.pointerType || lastPointer) === 'touch';
+    if (touchInput && !hit && tapped && Math.hypot(e.clientX - tapped.x, e.clientY - tapped.y) < 22) hit = tapped.spot;
+    if (hit && hit.guest) {
+      e.preventDefault();
+      if (!touchInput || (tapped && tapped.spot === hit)) croak(hit);
+      if (touchInput) { tapped = { spot: hit, x: e.clientX, y: e.clientY }; setHover(hit); }
+      return;
+    }
+    if (touchInput) { tapped = null; setHover(null); }
+    if (keyboard) return;
     if (!hit && hitFlower(e.clientX, e.clientY)) { e.preventDefault(); location.href = FLOWER_HREF; return; }
     // клик мимо жабки (по кочке) ничего не открывает
     if (!spot || !hit || hit.el !== spot) {
@@ -332,10 +303,13 @@
   });
   field.addEventListener('pointermove', function (e) {
     if (e.pointerType === 'touch') return;
+    tapped = null;
     var s = hitSpot(e.clientX, e.clientY);
     setHover(s, !s && hitFlower(e.clientX, e.clientY));
   });
-  field.addEventListener('mouseleave', function () { setHover(null); });
+  field.addEventListener('pointerleave', function (e) {
+    if (e.pointerType !== 'touch') setHover(null);
+  });
 
   // Время от времени случайная жабка выглядывает сама.
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -344,7 +318,7 @@
   function peek() {
     if (!running) return;
     var visible = spots.filter(function (s) {
-      return s.guest && !s.el.classList.contains('is-up') && !s.el.classList.contains('is-gone');
+      return s.guest && !s.el.classList.contains('is-up');
     });
     if (visible.length) {
       var s = visible[Math.floor(Math.random() * visible.length)];
@@ -364,9 +338,6 @@
     if (!visible) { running = false; clearTimeout(timer); }
   }, { rootMargin: '200px' });
   observer.observe(field);
-
-  // Жабку положили в корзину целиком (или вернули) — пересаживаем.
-  window.addEventListener('larion-cart-change', function () { seat(true); });
 
   var resizeTimer;
   window.addEventListener('resize', function () {

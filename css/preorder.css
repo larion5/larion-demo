@@ -4,6 +4,24 @@
 .pre-head { padding: 40px var(--gutter) 0; }
 .pre-head .title { text-align: center; }
 .pre-head p { max-width: 1100px; margin: 18px 0 0; text-align: left; }
+.pre-pause-art {
+  --pause-photo-width: min(330px, 42vw);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--pause-photo-width) minmax(0, 1fr);
+  align-items: center;
+  overflow: clip;
+  padding-bottom: 20px;
+}
+.pre-pause-art img { width: 100%; height: auto; border-radius: var(--radius); }
+.pre-pause-art span {
+  color: var(--ink);
+  opacity: .3;
+  font: 700 min(calc((100vw - var(--pause-photo-width)) / 7), 180px)/1 'Krug', 'Cruinn', Arial, sans-serif;
+  letter-spacing: -.04em;
+  white-space: nowrap;
+}
+.pre-pause-art span:first-child { justify-self: end; padding-right: .08em; }
+.pre-pause-art span:last-child { padding-left: .08em; }
 
 .pre { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; padding: 24px var(--gutter) 0; }
 

@@ -86,6 +86,8 @@
 
 /* Телефон: в мистери фрокс плитки помельче — по три в ряд, общие фото коллекции на всю ширину (заметка Леры) */
 @media (max-width: 639px) {
+  .gal-exclusive { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .gal-exclusive .gal-ex:not(:has(.gal-video)) { grid-column: 1 / -1; }
   .gal-col__body { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
   .gal-col__cover, .gal-col__cover2 { grid-column: 1 / -1; grid-row: auto; }
   .gal-named figcaption { margin-top: 3px; font-size: 12px; line-height: 1.2; }

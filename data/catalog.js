@@ -79,6 +79,7 @@ window.LARION_DATA = {
             "descr": "Жабагочи, три цветочка, шляпка и&nbsp;мягкий коврик&nbsp;— соберите сами",
             "text": "Подарочный набор включает в&nbsp;себя:<br />• Жабагочи на&nbsp;выбор<br />• Три цветочка шляпки на&nbsp;выбор<br />• Одна шляпка до&nbsp;300&nbsp;₽<br />• Мягкий коврик ручной работы<br /><br /><span class=\"small\">Материал жабагочи, шляпки и&nbsp;цветочков: керамическая масса, высокотемпературные глазури, фехралевая проволока.</span><br /><span class=\"small\">Материал коврика: пряжа акриловая.</span><br /><span class=\"small\">Размер жабагочи: 2×3&nbsp;см.</span><br /><span class=\"small\">Размер шляпки и&nbsp;цветочков: 1&nbsp;см или меньше.</span><br /><span class=\"small\">Диаметр коврика: 5–6&nbsp;см.</span><br /><span class=\"small\">Товар 14+</span>",
             "images": [
+                "assets/img/products/770952406710-cover.webp",
                 "assets/img/products/672138673013-2.jpg",
                 "assets/img/products/672138673013-3.jpg"
             ],

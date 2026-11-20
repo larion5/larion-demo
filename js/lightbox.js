@@ -219,7 +219,7 @@
       if (pinchScale === 1) moveZoom({ clientX: (first.clientX + second.clientX) / 2, clientY: (first.clientY + second.clientY) / 2 });
       touch = { distance: distance(e.touches), scale: pinchScale };
     } else if (e.touches.length === 1) {
-      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, backdrop: e.target === box };
     }
   }, { passive: true });
   box.addEventListener('touchmove', function (e) {
@@ -240,14 +240,20 @@
     var start = touch;
     touch = null;
     suppressClickUntil = Date.now() + 350;
-    if (start.distance || pinchScale > 1) return;
+    if (start.distance) return;
     var finger = e.changedTouches[0], dx = finger.clientX - start.x, dy = finger.clientY - start.y;
+    if (start.backdrop && Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+      if (e.cancelable) e.preventDefault();
+      close();
+      return;
+    }
+    if (pinchScale > 1) return;
     if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) turn(dx < 0 ? 1 : -1);
     else if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && list.length > 1) {
       var r = box.getBoundingClientRect();
       turn(finger.clientX < r.left + r.width / 2 ? -1 : 1);
     }
-  }, { passive: true });
+  }, { passive: false });
   box.addEventListener('touchcancel', function () { touch = null; });
 
   // Галерея «Фото-охота» на главной

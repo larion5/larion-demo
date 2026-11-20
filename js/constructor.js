@@ -81,9 +81,10 @@
       var a = anchor(kind, item);
       slot.style.height = pct(h, STAGE_H);
       slot.style.transformOrigin = pct(a.x, w) + ' ' + pct(a.y, h);
+      var img = null;
       if (item) {
-        var img = document.createElement('img');
-        img.src = item.src;
+        img = document.createElement('img');
+        if (kind !== 'mat') img.src = item.src;
         img.alt = '';
         img.draggable = false;
         if (item.transform) img.style.transform = item.transform;
@@ -93,7 +94,7 @@
         slot.textContent = kind === 'hat' ? 'без шляпы' : 'без коврика';
       }
       band.appendChild(slot);
-      slots[kind][i] = { el: slot, item: item, anchor: a, w: w };
+      slots[kind][i] = { el: slot, img: img, item: item, anchor: a, w: w };
     });
   }
 
@@ -104,6 +105,9 @@
       // d — насколько предмет отстоит от центра: 0 — в центре, ±1 — сосед.
       var d = mod(i - pos[kind] + n / 2, n) - n / 2;
       var abs = Math.abs(d);
+      if (kind === 'mat' && s.img && abs < 2.1 && !s.img.hasAttribute('src')) {
+        s.img.src = s.item.src.replace(/\.webp$/, '-stage.webp');
+      }
       var limited = Math.max(-1.5, Math.min(1.5, d));
       var x = RADIUS[kind] * Math.sin(limited * Math.PI / 3.2);
       var scale = abs <= 1 ? 1 - (1 - SIDE_SCALE) * abs : SIDE_SCALE - 0.1 * Math.min(abs - 1, 0.5) * 2;

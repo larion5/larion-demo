@@ -149,8 +149,8 @@ h1, h2, h3, p { margin: 0; }
   display: flex; align-items: center; justify-content: center;
   min-width: 18px; height: 18px; padding: 0 4px;
   border-radius: 9px;
-  z-index: 1; background: #a6322b; color: #fff;
-  font-family: inherit; font-size: 12px; font-weight: 700; line-height: 1;
+  background: var(--accent); color: #fff;
+  font-family: Arial, sans-serif; font-size: 11px; font-weight: 700; line-height: 1;
 }
 .cart-btn__count[hidden] { display: none; }
 .burger { display: none; width: 28px; height: 28px; padding: 0; border: 0; background: none; }
@@ -251,7 +251,7 @@ h1, h2, h3, p { margin: 0; }
 .card__descr { flex: 1; line-height: 1.55; }
 .card__body .btn { align-self: flex-start; min-height: 50px; margin-top: 12px; padding: 8px 32px; font-size: min(20px, var(--fs-text)); }
 .products-more { padding-top: 50px; }
-.products-more .btn { width: min(600px, 100%); min-height: 100px; }
+.products-more .btn { width: min(300px, 100%); min-height: 88px; }
 
 @media (max-width: 959px) {
   .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -259,7 +259,7 @@ h1, h2, h3, p { margin: 0; }
 @media (max-width: 639px) {
   .products { grid-template-columns: minmax(0, 1fr); }
   .products-more { padding-top: 28px; }
-  .products-more .btn { min-height: 60px; }
+  .products-more .btn { min-height: 54px; }
 }
 
 /* Предзаказ
@@ -297,7 +297,7 @@ h1, h2, h3, p { margin: 0; }
 .swamp__spot { position: absolute; bottom: 0; z-index: 2; display: block; -webkit-tap-highlight-color: transparent; }
 .swamp__spot[hidden] { display: none; }
 .swamp__spot--back { z-index: 1; }
-.swamp__spot--seat { z-index: 3; }
+.swamp__spot--seat { z-index: 3; padding: 0; border: 0; background: none; touch-action: manipulation; }
 .swamp__spot { cursor: inherit; } /* курсор-ладошка только над самой жабкой, её ставит swamp.js */
 .swamp__moss { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
 /* ярко-зелёные кочки приглушены, чтобы не выбивались из спокойной палитры сайта */
@@ -313,10 +313,46 @@ h1, h2, h3, p { margin: 0; }
 .swamp__img { position: absolute; display: block; max-width: none; height: auto; pointer-events: none; user-select: none; }
 .swamp__spot.is-peek .swamp__frog { transform: translateY(var(--peek)); }
 .swamp__spot.is-up .swamp__frog, .swamp__spot:focus-visible .swamp__frog { transform: translateY(var(--up)); }
-.swamp__spot.is-gone .swamp__frog { transform: translateY(var(--gone)); transition: transform .45s ease-in; }
 .swamp__spot:focus-visible { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .swamp__frog { transform: translateY(var(--peek)); transition: none; }
+}
+.swamp__croak {
+  position: absolute; z-index: 1; pointer-events: none;
+  color: var(--olive); font: 400 clamp(16px, 2.7vw, 34px)/1 'Krug', 'Cruinn', Arial, sans-serif;
+  transform: translate(-50%, -125%);
+}
+.home-page main .btn {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font: 700 min(20px, var(--fs-text))/1.4 'Cruinn', Arial, sans-serif;
+}
+@media (max-width: 639px) {
+  .home-page main .btn { font-size: 14px; }
+}
+.home-page .is-photo-loading {
+  background-color: #e7e5df;
+  background-image: linear-gradient(105deg, transparent 45%, rgb(255 255 255 / 25%) 50%, transparent 55%);
+  background-size: 300% 100%;
+}
+.home-page .about__photo:has(noscript img) > .about__img[data-full-src] { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .home-page .is-photo-loading { animation: home-photo-shimmer 1.65s linear infinite; }
+}
+@keyframes home-photo-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .swamp__croak { animation: swamp-croak 1s ease-out both; }
+}
+@keyframes swamp-croak {
+  0% { opacity: 0; transform: translate(-50%, -125%); }
+  18% { opacity: 1; transform: translate(calc(-50% + var(--croak-drift) * .18), -160%) rotate(-7deg); }
+  42% { opacity: 1; transform: translate(calc(-50% + var(--croak-drift) * .42), -210%) rotate(7deg); }
+  68% { opacity: .85; transform: translate(calc(-50% + var(--croak-drift) * .68), -265%) rotate(-5deg); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--croak-drift)), -335%) rotate(3deg); }
 }
 /* Обо мне   -------------------------------------------------------------------------- */
 .about {
@@ -503,6 +539,26 @@ h1, h2, h3, p { margin: 0; }
 .cat-descr { flex: 1 1 auto; margin: 0 auto 0 0; font-size: 22px; line-height: 1.3; }
 .cat-descr[hidden] { display: none; }
 .empty { padding: 60px var(--gutter); text-align: center; }
+.availability-note {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px var(--gutter);
+  text-align: center;
+}
+.availability-note a { text-decoration: underline; text-underline-offset: 3px; }
+[data-stock-empty]:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: center;
+  gap: clamp(14px, 4vw, 48px);
+  max-width: 820px;
+  text-align: left;
+}
+[data-stock-empty] img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
 .load-more { display: flex; justify-content: center; padding: 40px var(--gutter) 0; }
 .load-more[hidden] { display: none; }
 .load-more.is-auto { height: 1px; padding: 0; overflow: hidden; visibility: hidden; } /* товары догружаются сами при прокрутке */
