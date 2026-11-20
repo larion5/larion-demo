@@ -6,8 +6,18 @@
   <title>Larion | Керамические жабки</title>
   <meta name="description" content="Керамические жабки размером с раффаэллку, а ещё с попами и шляпками. Декоративные интерьерные статуэтки ручной работы.">
   <link rel="stylesheet" href="css/style.css?v=top1">
+  <script defer src="data/catalog.js"></script>
+  <script defer src="data/constructor.js"></script>
+  <script defer src="data/photo-focus.js"></script>
+  <script defer src="js/focus.js"></script>
+  <script defer src="js/layout.js"></script>
+  <script defer src="js/lightbox.js"></script>
+  <script defer src="js/cart.js?v=checkout3"></script>
+  <script defer src="js/shop.js"></script>
+  <script defer src="js/builder-teaser.js"></script>
+  <script defer src="js/swamp.js"></script>
 </head>
-<body data-page-script="js/builder-teaser.js js/swamp.js">
+<body>
   <div id="site-header"></div>
 
   <main>
@@ -88,10 +98,10 @@
     <section class="triple">
       <h3 class="subtitle">Изготовление</h3>
       <div class="triple__grid triple__grid--four">
-        <figure class="figure"><video src="assets/video/making-1.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Ручная лепка</figcaption></figure>
-        <figure class="figure"><video src="assets/video/making-2.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Роспись</figcaption></figure>
-        <figure class="figure"><video src="assets/video/making-3.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Обжиг на&nbsp;1200°С</figcaption></figure>
-        <figure class="figure"><video src="assets/video/making-4.mp4" autoplay muted loop playsinline preload="metadata"></video><figcaption>Упаковка</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-1.mp4" muted loop playsinline preload="none"></video><figcaption>Ручная лепка</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-2.mp4" muted loop playsinline preload="none"></video><figcaption>Роспись</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-3.mp4" muted loop playsinline preload="none"></video><figcaption>Обжиг на&nbsp;1200°С</figcaption></figure>
+        <figure class="figure"><video data-src="assets/video/making-4.mp4" muted loop playsinline preload="none"></video><figcaption>Упаковка</figcaption></figure>
       </div>
     </section>
 
@@ -126,12 +136,22 @@
 
   <div id="site-footer"></div>
 
-  <script src="data/catalog.js"></script>
-  <script src="data/constructor.js"></script>
-  <script src="data/photo-focus.js"></script>
-  <script src="js/focus.js"></script>
-  <script src="js/layout.js"></script>
-  <script src="js/lightbox.js"></script>
-  <script src="js/sheet.js?v=checkout3"></script>
+  <script>
+    (function () {
+      var videos = document.querySelectorAll('video[data-src]');
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var video = entry.target;
+          if (!entry.isIntersecting) {
+            video.pause();
+            return;
+          }
+          if (!video.hasAttribute('src')) video.src = video.dataset.src;
+          video.play().catch(function () {});
+        });
+      });
+      videos.forEach(function (video) { observer.observe(video); });
+    })();
+  </script>
 </body>
 </html>
