@@ -15,11 +15,14 @@
 /* Кнопка-фото: клик открывает просмотр */
 .gal-photo { display: block; width: 100%; padding: 0; border: 0; overflow: hidden; border-radius: var(--radius); background: #e6e3da; cursor: zoom-in; }
 .gal-photo img { display: block; width: 100%; height: auto; transition: transform .3s ease; }
-.gal-photo:hover img { transform: scale(1.03); }
+@media (hover: hover) and (pointer: fine) {
+  .gal-photo:hover img { transform: scale(1.03); }
+}
 
 /* Фото-охота: колонки, фото не обрезаются */
 .gal-hunt { columns: 3 280px; column-gap: 16px; }
 .gal-hunt .gal-photo { margin-bottom: 16px; break-inside: avoid; }
+.gal-hunt img { aspect-ratio: auto 4 / 5; }
 
 /* Мистери фрокс: коллекция — заголовок с датой, текст, ряд квадратных фото */
 .gal-mystery { display: flex; flex-direction: column; gap: 48px; }

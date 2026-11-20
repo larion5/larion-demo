@@ -66,8 +66,9 @@
   }
   function build() {
     gallery.innerHTML = STEPS.map(function (step, i) {
-      var items = step.items.map(function (item) {
-        return tileHtml(step.key, item, '<img src="' + pic(step.key, item) + '" alt="" loading="lazy">', item === AS_POSE ? '' : (step.key === 'pose' ? 'Подробнее' : 'zoom'));
+      var items = step.items.map(function (item, index) {
+        var visiblePose = step.key === 'pose' && (index < 4 || item.id === 'antistress');
+        return tileHtml(step.key, item, '<img src="' + pic(step.key, item) + '" alt="" decoding="async"' + (visiblePose ? '' : ' loading="lazy"') + '>', item === AS_POSE ? '' : (step.key === 'pose' ? 'Подробнее' : 'zoom'));
       }).join('');
       // после поз — шаг для своего выбора к позе (экран квакбука, клеточки пледа…), виден только у таких поз
       return stepHtml(step.key, step.title, items, i === 0 ? randomHtml : '') + (i === 0 ? stepHtml('option', '', '') : '');

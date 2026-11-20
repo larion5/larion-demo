@@ -68,7 +68,7 @@
       '</nav>' +
       '<div class="header__actions">' +
         '<button class="cart-btn" type="button" data-cart-open aria-label="Корзина">' + CART_ICON +
-          '<span class="cart-btn__count" data-cart-count hidden>0</span></button>' +
+          '<span class="cart-btn__count" data-cart-count aria-live="polite" hidden>0</span></button>' +
         '<button class="burger" type="button" data-drawer-open aria-label="Навигационное меню"><span></span><span></span><span></span></button>' +
       '</div>' +
     '<div class="submenu" data-submenu>' +
@@ -176,35 +176,6 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-  // Новая страница всегда открывается сверху. Браузер иногда сам возвращает старую прокрутку —
-  // оставляем это только для кнопки «Назад» / «Вперёд» (каталог так помнит, где был человек) и для ссылок с #разделом.
-  var navType = (performance.getEntriesByType && performance.getEntriesByType('navigation')[0] || {}).type;
-  if (navType !== 'back_forward' && location.hash.length <= 1) {
-    var moved = false;
-    ['wheel', 'touchmove', 'keydown'].forEach(function (t) { window.addEventListener(t, function () { moved = true; }, { once: true, passive: true }); });
-    var toTopNow = function () { if (!moved) window.scrollTo(0, 0); };
-    toTopNow();
-    window.addEventListener('load', function () { toTopNow(); setTimeout(toTopNow, 50); });
-  }
-
-  // Переход из меню на раздел главной (index.html#about и т.п.): товары и картинки догружаются позже и сдвигают страницу,
-  // поэтому после загрузки ещё раз ставим раздел точно под шапку — если человек сам ещё не листал.
-  if (location.hash.length > 1) {
-    var userScrolled = false;
-    ['wheel', 'touchmove', 'keydown'].forEach(function (t) { window.addEventListener(t, function () { userScrolled = true; }, { once: true, passive: true }); });
-    var toHash = function () {
-      var el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      if (el && !userScrolled) el.scrollIntoView({ behavior: 'auto' });
-    };
-    // пока страница догружается (товары, картинки), каждый её сдвиг возвращает раздел на место; через 6 секунд перестаём
-    if (window.ResizeObserver) {
-      var ro = new ResizeObserver(toHash);
-      ro.observe(document.body);
-      setTimeout(function () { ro.disconnect(); }, 6000);
-    }
-    window.addEventListener('load', function () { toHash(); setTimeout(toHash, 400); });
-  }
 
   window.LARION_CONTACTS = CONTACTS;
 

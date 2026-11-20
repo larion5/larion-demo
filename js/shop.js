@@ -196,7 +196,7 @@
     };
     var fl = B.flower(b), mat = B.mat(b);
     return '<div class="kit" data-kit>' +
-      '<div class="kit__step"><div class="kit__head">1. Жабагочи <b data-kit-label="frog"></b></div><div class="kit__list">' +
+      '<div class="kit__step"><div class="kit__head">1. Жабагочи</div><div class="kit__list">' +
         B.frogs(b).map(function (x) { return tile('data-kit-frog="' + x.id + '"', x.images[0], x.title.replace(/^Жабагочи\s*/i, '')); }).join('') + '</div></div>' +
       '<div class="kit__step"><div class="kit__head">2. Три цветочка <b data-kit-label="flowers">0 из ' + b.flowers.count + '</b></div>' +
         '<p class="kit__hint">Нажимайте на цветочек, можно выбрать одинаковые. Нажатие на выбранный внизу — убрать.</p>' +
@@ -232,7 +232,6 @@
         return '<button type="button" class="kit__chip" data-kit-unflower="' + i + '" title="Убрать"><img src="' + o.image + '" alt="">' + o.title + ' ✕</button>';
       }).join('');
       var frog = st.frog && byId(st.frog), hat = st.hat && byId(st.hat);
-      el.querySelector('[data-kit-label="frog"]').textContent = frog ? plain(frog.title) : '';
       el.querySelector('[data-kit-label="flowers"]').textContent = st.flowers.length + ' из ' + b.flowers.count;
       var box = el.querySelector('[data-kit-hatopts]');
       box.hidden = !(hat && hat.options);
@@ -335,12 +334,12 @@
     el.innerHTML =
       '<div class="product__thumbs">' + (many ? p.images.map(function (src, i) {
         return isVideo(src)
-          ? '<button class="is-video" type="button" data-thumb="' + i + '" aria-label="Видео"><video src="' + src + '#t=0.5" muted playsinline preload="metadata"></video></button>'
+          ? '<button class="is-video" type="button" data-thumb="' + i + '" aria-label="Видео"><img src="' + src.replace(/\.mp4$/i, '-poster.webp') + '" alt="" loading="lazy"></button>'
           : '<button type="button" data-thumb="' + i + '" aria-label="Фото ' + (i + 1) + '"><img src="' + src + '" alt=""></button>';
       }).join('') : '') + '</div>' +
       '<div class="product__main">' +
         '<img data-main src="' + (isVideo(p.images[0]) ? '' : p.images[0]) + '" alt="' + p.title + '">' +
-        '<video data-main-video controls muted loop playsinline preload="metadata" hidden></video>' +
+        '<video data-main-video controls muted loop playsinline preload="none" hidden></video>' +
         (many ? '<button class="arrow arrow--prev product__arrow" type="button" data-step="-1" aria-label="Предыдущее фото"></button><button class="arrow product__arrow product__arrow--next" type="button" data-step="1" aria-label="Следующее фото"></button>' : '') +
       '</div>' +
       '<div class="product__info">' +
@@ -416,7 +415,10 @@
       main.hidden = vid;
       video.hidden = !vid;
       if (vid) {
-        if (video.getAttribute('src') !== src) video.src = src;
+        if (video.getAttribute('src') !== src) {
+          video.poster = src.replace(/\.mp4$/i, '-poster.webp');
+          video.src = src;
+        }
         var playing = video.play();
         if (playing && playing.catch) playing.catch(function () {});
       } else {
@@ -430,7 +432,42 @@
     main.tabIndex = 0;
     main.setAttribute('role', 'button');
     main.setAttribute('aria-label', 'Открыть фото на весь экран');
-    main.addEventListener('click', openBig);
+    var mobilePhoto = matchMedia('(pointer: coarse)');
+    var touchStart = null;
+    var swipeEnded = 0;
+    function turnPhoto(direction) {
+      if (!many) return;
+      show(current + direction);
+      if (!main.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        main.getAnimations().forEach(function (animation) { animation.cancel(); });
+        main.animate([{ transform: 'translateX(' + direction * 25 + 'px)', opacity: .7 }, { transform: 'none', opacity: 1 }], { duration: 160 });
+      }
+    }
+    main.addEventListener('touchstart', function (e) {
+      touchStart = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null;
+    }, { passive: true });
+    main.addEventListener('touchcancel', function () { touchStart = null; });
+    main.addEventListener('touchend', function (e) {
+      if (!touchStart || e.touches.length) return;
+      var dx = e.changedTouches[0].clientX - touchStart[0];
+      var dy = e.changedTouches[0].clientY - touchStart[1];
+      touchStart = null;
+      if (Math.abs(dx) < 42 || Math.abs(dx) < Math.abs(dy)) return;
+      swipeEnded = Date.now();
+      turnPhoto(dx < 0 ? 1 : -1);
+    }, { passive: true });
+    main.addEventListener('click', function (e) {
+      if (Date.now() - swipeEnded < 350) return;
+      if (many && mobilePhoto.matches && e.detail > 0) {
+        var rect = main.getBoundingClientRect();
+        var fraction = (e.clientX - rect.left) / rect.width;
+        if (fraction < .28 || fraction > .72) {
+          turnPhoto(fraction < .28 ? -1 : 1);
+          return;
+        }
+      }
+      openBig();
+    });
     main.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openBig(); }
     });
@@ -485,18 +522,19 @@
     var category = data.categories.filter(function (c) { return c.slug === p.category; })[0];
     var backUrl = category ? 'catalog.html?cat=' + category.slug : 'catalog.html';
 
-    document.querySelector('[data-product-crumbs]').innerHTML =
+    var crumbs = document.querySelector('[data-product-crumbs]');
+    crumbs.innerHTML =
       '<a href="index.html">Главная</a><span aria-hidden="true">›</span>' +
       '<a href="catalog.html">Наличие</a><span aria-hidden="true">›</span>' +
       (category ? '<a href="' + backUrl + '">' + category.title + '</a><span aria-hidden="true">›</span>' : '') +
       '<span aria-current="page">' + p.title + '</span>';
 
     fillProduct(root, p);
-    root.insertAdjacentHTML('beforeend', '<a class="product__close" href="' + backUrl + '" data-back aria-label="Закрыть и вернуться назад"></a>');
+    crumbs.insertAdjacentHTML('beforeend', '<a class="product__close" href="' + backUrl + '" data-back aria-label="Закрыть и вернуться назад"></a>');
 
     // Крестик возвращает на страницу, откуда пришли. Если её нет, например, товар открыли
     // по прямой ссылке, ведёт в категорию товара.
-    root.querySelector('[data-back]').addEventListener('click', function (e) {
+    crumbs.querySelector('[data-back]').addEventListener('click', function (e) {
       var fromSite = document.referrer.indexOf(location.origin + '/') === 0;
       if (fromSite && history.length > 1) {
         e.preventDefault();

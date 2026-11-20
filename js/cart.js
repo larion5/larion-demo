@@ -274,18 +274,22 @@
     // «Может, шляпку?» к жабагочи без шляпы, «Может, коврик?» к жабке без коврика. «Нет, спасибо» — до конца визита.
     var hasMat = items.some(function (i) { return productOf(i).category === 'kovriki'; });
     var hasFrog = items.some(function (i) { var c = productOf(i).category; return c === 'zhabi' || (/^pre:/.test(i.id) && !/:gochi:/.test(i.id)); });
-    var tipKind = hasGochi && !hasHat ? 'hat' : hasFrog && !hasMat && !hasGochi ? 'mat' : '';
+    var onlyMats = items.length > 0 && items.every(function (i) { return productOf(i).category === 'kovriki'; });
+    var tipKind = onlyMats ? 'frog' : hasGochi && !hasHat ? 'hat' : hasFrog && !hasMat && !hasGochi ? 'mat' : '';
     var tipOff = false;
     try { tipOff = sessionStorage.getItem('larion_demo_tip_' + tipKind) === '1'; } catch (e) {}
     tip.hidden = !tipKind || tipOff;
     if (tipKind) {
       tip.setAttribute('data-kind', tipKind);
-      tip.querySelector('[data-tip-text]').innerHTML = tipKind === 'hat'
+      tip.querySelector('[data-tip-text]').innerHTML = tipKind === 'frog'
+        ? '<b>У вас тут только коврики, может добавим жабок?</b>'
+        : tipKind === 'hat'
         ? '<b>Может, шляпку? 🎩</b> В подарок к жабагочи идёт случайная шляпка до 250 ₽, но можете выбрать и сами!'
         : '<b>Может, коврик?</b> Чтобы жопка жабки не мёрзла 🐸';
       var link = tip.querySelector('[data-tip-link]');
-      link.href = tipKind === 'hat' ? 'catalog.html?cat=shlyapi' : 'catalog.html?cat=kovriki';
-      link.textContent = tipKind === 'hat' ? 'Выбрать шляпку' : 'Выбрать коврик';
+      link.href = 'catalog.html?cat=' + ({ frog: 'zhabi', hat: 'shlyapi', mat: 'kovriki' })[tipKind];
+      link.textContent = ({ frog: 'Да, добавим жабок', hat: 'Выбрать шляпку', mat: 'Выбрать коврик' })[tipKind];
+      tip.querySelector('[data-tip-no]').textContent = tipKind === 'frog' ? 'Нет, мне нужны только коврики' : 'Нет, спасибо';
     }
 
     elEmpty.hidden = rows.length > 0;
@@ -367,7 +371,7 @@
     clearAllUndo();
     root.classList.remove('is-open');
     document.body.classList.remove('is-locked');
-    if (lastFocus) lastFocus.focus();
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
   }
 
   root.addEventListener('click', function (e) {

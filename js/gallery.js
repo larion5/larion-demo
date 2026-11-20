@@ -7,12 +7,13 @@
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function empty(text) { return '<p class="gal-empty">' + text + '</p>'; }
+  function preview(s) { return s ? s + '-preview.webp' : ''; }
 
   // ---------- Фото-охота: колонки разной высоты, фото целиком
   var hunt = data.hunt || [];
   document.querySelector('[data-hunt]').innerHTML = hunt.length
     ? hunt.map(function (p, i) {
-      return '<button class="gal-photo" type="button" data-zoom="hunt" data-i="' + i + '"><img src="' + esc(p.src) + '" alt="' + esc(p.alt) + '" loading="lazy"></button>';
+      return '<button class="gal-photo" type="button" data-zoom="hunt" data-i="' + i + '"><img src="' + esc(preview(p.src)) + '" alt="' + esc(p.alt) + '" loading="lazy" decoding="async"></button>';
     }).join('')
     : empty('Скоро здесь появятся жабки на природе.');
 
@@ -30,14 +31,14 @@
         (c.cover ? '<button class="gal-photo gal-col__cover" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="0"><img src="' + esc(c.cover) + '" alt="Вся коллекция «' + esc(c.title) + '»" loading="lazy"></button>' : '') +
         (c.cover2 ? '<button class="gal-photo gal-col__cover2" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (c.cover ? 1 : 0) + '"><img src="' + esc(c.cover2) + '" alt="" loading="lazy"></button>' : '') +
         '<div class="gal-col__photos">' + photos.map(function (p, i) {
-          var tile = '<button class="gal-photo gal-photo--sq" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (i + shift) + '"><img src="' + esc(p.src) + '" alt="' + esc(p.title || '') + '" loading="lazy"></button>';
+          var tile = '<button class="gal-photo gal-photo--sq" type="button" data-zoom="mystery" data-c="' + ci + '" data-i="' + (i + shift) + '"><img src="' + esc(preview(p.src)) + '" alt="' + esc(p.title || '') + '" loading="lazy" decoding="async"></button>';
           return p.title ? '<figure class="gal-named">' + tile + '<figcaption>' + esc(p.title) + '</figcaption></figure>' : tile;
         }).join('') +
         // секретные жабки — под спойлером: размыты, пока не нажмёшь; бывает и видео
         (c.secret || []).map(function (src, i) {
           var media = /\.mp4$/i.test(src)
             ? '<video data-src="' + esc(src) + '#t=0.5" muted loop playsinline preload="none"></video>'
-            : '<img src="' + esc(src) + '" alt="" loading="lazy">';
+            : '<img src="' + esc(preview(src)) + '" alt="" loading="lazy" decoding="async">';
           return '<button class="gal-photo gal-photo--sq gal-secret" type="button" data-secret data-c="' + ci + '" data-i="' + i + '" aria-label="Показать секретную жабку">' +
             media + '<span class="gal-secret__label">Секретная жабка<small>нажмите, чтобы увидеть</small></span></button>';
         }).join('') + '</div></div>' +
@@ -54,7 +55,7 @@
       var isVid = function (s) { return /\.mp4$/i.test(s || ''); };
       var first = isVid(photos[0])
         ? '<button class="gal-photo gal-photo--card gal-video" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0" aria-label="Смотреть видео"><video data-src="' + esc(photos[0]) + '" muted loop playsinline preload="none"></video>'
-        : '<button class="gal-photo gal-photo--card" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0"><img src="' + esc(photos[0] || '') + '" alt="" loading="lazy">';
+        : '<button class="gal-photo gal-photo--card" type="button" data-zoom="exclusive" data-c="' + xi + '" data-i="0"><img src="' + esc(preview(photos[0])) + '" alt="" loading="lazy" decoding="async">';
       var vids = photos.filter(isVid).length;
       var count = vids === photos.length ? vids + ' видео' : photos.length + ' фото';
       return '<article class="gal-ex">' + first +
@@ -96,7 +97,10 @@
   window.addEventListener('resize', fitCovers);
 
   function playPreview(video) {
-    if (!video.hasAttribute('src')) video.src = video.dataset.src;
+    if (!video.hasAttribute('src')) {
+      video.poster = video.dataset.src.replace(/\.mp4(?:#.*)?$/i, '-poster.webp');
+      video.src = video.dataset.src;
+    }
     video.play().catch(function () {});
   }
   var previews = new IntersectionObserver(function (entries) {
@@ -131,7 +135,7 @@
         return;
       }
       // открытая секретка (фото или видео) открывается во весь экран, видео там играет со звуком
-      if (window.LarionLightbox) window.LarionLightbox.open(mystery[Number(s.getAttribute('data-c'))].secret, Number(s.getAttribute('data-i')));
+      if (window.LarionLightbox) window.LarionLightbox.open(mystery[Number(s.getAttribute('data-c'))].secret, Number(s.getAttribute('data-i')), { preview: preview });
       return;
     }
     var b = e.target.closest('[data-zoom]');
@@ -148,7 +152,7 @@
       if (ph.some(function (p) { return p.title; })) caps = lead.map(function () { return 'Вся коллекция «' + mc.title + '»'; }).concat(ph.map(function (p) { return p.title || ''; }));
     }
     else if (kind === 'exclusive') list = exclusive[c].photos || [];
-    window.LarionLightbox.open(list, i, caps ? { captions: caps } : undefined);
+    window.LarionLightbox.open(list, i, { captions: caps, preview: preview });
   });
 
   // ---------- Вкладки
@@ -161,7 +165,7 @@
       a.classList.toggle('is-active', p === part);
       a.setAttribute('aria-current', p === part ? 'page' : 'false');
     });
-    if (scroll) tabs.scrollIntoView({ block: 'start' });
+    if (scroll) tabs.scrollIntoView({ block: 'start', behavior: 'instant' });
     fitCovers();
   }
   tabs.addEventListener('click', function (e) {
@@ -180,5 +184,6 @@
     if (wasDown) window.scrollTo({ top: start - tabsTop, behavior: 'instant' });
   });
   window.addEventListener('hashchange', function () { show(location.hash.slice(1), true); });
-  show(location.hash.slice(1), false);
+  var initial = location.hash.slice(1);
+  show(initial, PARTS.indexOf(initial) !== -1);
 })();

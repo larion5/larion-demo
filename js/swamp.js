@@ -28,7 +28,7 @@
   ];
   // Цветочки на булавках: flower-1.png … flower-7.png — 1 клевер, 2 оранжевая звёздочка, 3 красный с завитком,
   // 4 белый, 5 розовый, 6 коралловый, 7 сиреневая звёздочка (вырезаны с фото, проволочка дорисована).
-  function flowerSrc(n) { return DIR + 'flower-' + n + '.png'; }
+  function flowerSrc(n) { return DIR + 'flower-' + n + '.webp'; }
 
   // Размеры относительно ширины куста (доли): жабка, цветочек, воткнутая шляпа.
   var FROG_SIZE = 0.17;
@@ -152,7 +152,7 @@
       var bodyH = (s.guest.frog && BODY_BOTTOM[f.id]) || f.h;
       var k = Math.min(w * 0.62, FW * FROG_SIZE, h * 0.95 * f.w / bodyH) / f.w;
       var frogH = bodyH * k;
-      var REST = 0.12;
+      var REST = s.hill.seat === 1 ? 0.46 : 0.12;
       g.style.width = (b.W * k) + 'px';
       g.style.height = (b.H * k) + 'px';
       g.style.left = (w * (s.hill.frogX || 0.5) - (f.ax - b.left) * k) + 'px';
@@ -195,6 +195,7 @@
     HILLS.forEach(function (hill) {
       var spot = document.createElement('a');
       spot.className = 'swamp__spot' + (hill.seat ? ' swamp__spot--seat' : '');
+      if (hill.seat === 1) spot.classList.add('swamp__spot--center');
       var flowers = hill.flowers || [];
       var flowerImg = function (f, i) {
         return '<img class="swamp__flower' + (f[3] == null ? '' : ' swamp__flower--side') + '" data-i="' + i + '" src="' + flowerSrc(f[0]) + '" alt="" draggable="false">';
@@ -260,9 +261,6 @@
     });
   }
 
-  // На телефоне первое касание поднимает жабку, второе открывает ссылку.
-  var touch = false;
-  field.addEventListener('pointerdown', function (e) { touch = e.pointerType === 'touch'; });
   // Наводить и нажимать можно только на саму жабку (или шляпу), а не на кочку вокруг неё.
   // Проверяем по пикселям: точка должна попасть в непрозрачную часть жабки и не быть закрыта мхом.
   var alphaCache = {};
@@ -320,31 +318,21 @@
     if (s === hovered) return;
     if (hovered) hovered.el.classList.remove('is-up');
     hovered = s;
-    if (s) s.el.classList.add('is-up');
+    if (s && s.hill.seat !== 1) s.el.classList.add('is-up');
   }
   field.addEventListener('click', function (e) {
     var spot = e.target.closest('.swamp__spot');
+    if (e.detail === 0 && spot && spot.hasAttribute('href')) return; // клавиатура
     var hit = hitSpot(e.clientX, e.clientY);
     if (!hit && hitFlower(e.clientX, e.clientY)) { e.preventDefault(); location.href = FLOWER_HREF; return; }
     // клик мимо жабки (по кочке) ничего не открывает
     if (!spot || !hit || hit.el !== spot) {
       e.preventDefault();
-      if (hit) {
-        // жабка видна поверх чужой кочки: открываем её
-        if (!touch || hit.el.classList.contains('is-up')) location.href = hit.el.getAttribute('href');
-        else { spots.forEach(function (s) { s.el.classList.remove('is-up'); }); hit.el.classList.add('is-up'); }
-      }
-      return;
-    }
-    if (!touch || !spot.classList.contains('swamp__spot--seat')) return;
-    if (!spot.classList.contains('is-up')) {
-      e.preventDefault();
-      spots.forEach(function (s) { s.el.classList.remove('is-up'); });
-      spot.classList.add('is-up');
+      if (hit) location.href = hit.el.getAttribute('href');
     }
   });
-  field.addEventListener('mousemove', function (e) {
-    if (touch) return;
+  field.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch') return;
     var s = hitSpot(e.clientX, e.clientY);
     setHover(s, !s && hitFlower(e.clientX, e.clientY));
   });
@@ -357,7 +345,7 @@
   function peek() {
     if (!running) return;
     var visible = spots.filter(function (s) {
-      return s.guest && !s.el.classList.contains('is-up') && !s.el.classList.contains('is-gone');
+      return s.guest && s.hill.seat !== 1 && !s.el.classList.contains('is-up') && !s.el.classList.contains('is-gone');
     });
     if (visible.length) {
       var s = visible[Math.floor(Math.random() * visible.length)];
@@ -367,10 +355,11 @@
     timer = setTimeout(peek, PEEK_MIN + Math.random() * PEEK_SPREAD);
   }
 
-  var built = false;
+  build();
+  Promise.allSettled(Array.from(field.querySelectorAll('img'), function (img) { return img.decode(); }))
+    .then(function () { field.classList.add('is-ready'); });
   var observer = new IntersectionObserver(function (entries) {
     var visible = entries[0].isIntersecting;
-    if (visible && !built) { built = true; build(); }
     if (reduceMotion) return;
     if (visible && !running) { running = true; timer = setTimeout(peek, 1500); }
     if (!visible) { running = false; clearTimeout(timer); }
@@ -378,11 +367,11 @@
   observer.observe(field);
 
   // Жабку положили в корзину целиком (или вернули) — пересаживаем.
-  window.addEventListener('larion-cart-change', function () { if (built) seat(true); });
+  window.addEventListener('larion-cart-change', function () { seat(true); });
 
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { if (built) redraw(); }, 150);
+    resizeTimer = setTimeout(redraw, 150);
   });
 })();

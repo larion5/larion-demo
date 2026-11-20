@@ -41,14 +41,26 @@
         slot.style.height = pct(item.h, STAGE_H);
         slot.style.transformOrigin = pct(a.x, item.w) + ' ' + pct(a.y, item.h);
         var img = document.createElement('img');
-        img.src = item.src;
         img.alt = '';
         if (item.transform) img.style.transform = item.transform;
         slot.appendChild(img);
         band.appendChild(slot);
-        slots[kind].push({ el: slot, item: item, a: a });
+        slots[kind].push({ el: slot, img: img, item: item, a: a });
       });
       box.appendChild(band);
+    });
+  }
+
+  function loadNear(kind, position) {
+    var row = slots[kind], n = row.length;
+    return row.filter(function (s, i) {
+      return Math.abs(mod(i - position + n / 2, n) - n / 2) < 1.5;
+    }).map(function (s) {
+      if (!s.ready) {
+        s.img.src = kind === 'mat' ? s.item.src.replace(/\.[^.]+$/, '-teaser.webp') : s.item.src;
+        s.ready = s.img.decode().catch(function () {});
+      }
+      return s.ready;
     });
   }
 
@@ -104,21 +116,33 @@
 
   function next() {
     if (!running) return;
-    spin(ORDER[step % ORDER.length], function () {
-      step += 1;
-      if (running) timer = setTimeout(next, 1300);
+    var kind = ORDER[step % ORDER.length];
+    Promise.all(loadNear(kind, pos[kind] + 1)).then(function () {
+      if (!running) return;
+      spin(kind, function () {
+        step += 1;
+        if (running) timer = setTimeout(next, 1300);
+      });
     });
   }
 
   var built = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function prepare() {
+    if (built) return;
+    built = true;
+    build();
+    placeAll();
+    ['mat', 'frog', 'hat'].forEach(function (kind) { loadNear(kind, 0); });
+    preload.disconnect();
+  }
+  var preload = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) prepare();
+  }, { rootMargin: '550px' });
+  preload.observe(box);
   var observer = new IntersectionObserver(function (entries) {
     var visible = entries[0].isIntersecting;
-    if (visible && !built) {
-      built = true;
-      build();
-      placeAll();
-    }
+    if (visible) prepare();
     if (reduceMotion) return;
     if (visible && !running) {
       running = true;

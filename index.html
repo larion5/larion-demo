@@ -1,21 +1,24 @@
 <!doctype html>
 <html lang="ru">
-<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout3"><script src="js/demo.js?v=checkout3"></script>
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile3"><script src="js/demo.js?v=checkout3"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Larion | Керамические жабки</title>
   <meta name="description" content="Керамические жабки размером с раффаэллку, а ещё с попами и шляпками. Декоративные интерьерные статуэтки ручной работы.">
-  <link rel="stylesheet" href="css/style.css?v=top1">
+  <link rel="stylesheet" href="css/style.css?v=mobile3">
+  <link rel="preload" as="image" href="assets/img/swamp/moss-bright.webp">
+  <link rel="preload" as="image" href="assets/img/swamp/moss-olive.webp">
+  <link rel="preload" as="image" href="assets/img/swamp/moss-lime.webp">
   <script defer src="data/catalog.js"></script>
   <script defer src="data/constructor.js"></script>
   <script defer src="data/photo-focus.js"></script>
   <script defer src="js/focus.js"></script>
-  <script defer src="js/layout.js"></script>
-  <script defer src="js/lightbox.js"></script>
-  <script defer src="js/cart.js?v=checkout3"></script>
-  <script defer src="js/shop.js"></script>
-  <script defer src="js/builder-teaser.js"></script>
-  <script defer src="js/swamp.js"></script>
+  <script defer src="js/layout.js?v=mobile3"></script>
+  <script defer src="js/lightbox.js?v=mobile3"></script>
+  <script defer src="js/cart.js?v=mobile3"></script>
+  <script defer src="js/shop.js?v=mobile3"></script>
+  <script defer src="js/builder-teaser.js?v=mobile3"></script>
+  <script defer src="js/swamp.js?v=mobile3"></script>
 </head>
 <body>
   <div id="site-header"></div>
@@ -23,7 +26,7 @@
   <main>
     <!-- Первый экран -->
     <section class="hero">
-      <!-- Кочки с жабками, логика в js/swamp.js -->
+      <!-- Кочки с жабками, логика в js/swamp.js?v=mobile3 -->
       <div class="hero__swamp swamp" aria-label="Жабки во мху">
         <div class="swamp__field" data-swamp></div>
       </div>
@@ -40,7 +43,7 @@
     <div class="products" data-products="zhabi zhabagochi" data-random data-limit="4"></div>
     <div class="btn-row products-more"><a class="btn" href="catalog.html">Ещё жабов!</a></div>
 
-    <!-- Конструктор: анимация в js/builder-teaser.js -->
+    <!-- Конструктор: анимация в js/builder-teaser.js?v=mobile3 -->
     <section class="preorder" id="builder">
       <a class="teaser" href="constructor.html" data-teaser aria-label="Открыть конструктор"></a>
       <div class="preorder__text">
@@ -51,7 +54,7 @@
     </section>
 
     <!-- Предзаказ -->    <section class="preorder" id="preorder">
-      <img class="preorder__img" src="assets/img/home/preorder.webp" alt="Голубая жабка на мху" loading="lazy">
+      <img class="preorder__img" src="assets/img/home/preorder.webp" width="1080" height="1440" srcset="assets/img/home/preorder.webp-preview.webp 465w, assets/img/home/preorder.webp 1080w" sizes="(max-width: 639px) 92vw, 50vw" decoding="async" alt="Голубая жабка на мху" loading="lazy">
       <div class="preorder__text">
         <h2 class="title">Предзаказ</h2>
         <p>Нет нужной жабки в&nbsp;наличии? Оформите предзаказ! Выберите дизайн, окрас и&nbsp;мордочку жабки из&nbsp;каталога предзаказа</p>
@@ -72,7 +75,7 @@
         <p>Нам всем иногда нужно остановиться, сесть на&nbsp;камень у&nbsp;воды, просто побыть собой. И, может быть, немного поквакать</p>
       </div>
       <div class="about__photo">
-        <img class="about__img" src="assets/img/home/about.webp" alt="Лера Ларион среди цветущих веток" loading="lazy">
+        <img class="about__img" src="assets/img/home/about.webp" width="1084" height="1440" srcset="assets/img/home/about.webp-preview.webp 467w, assets/img/home/about.webp 1084w" sizes="(max-width: 639px) 92vw, 50vw" decoding="async" alt="Лера Ларион среди цветущих веток" loading="lazy">
         <img class="about__sticker" src="assets/img/stickers/hearts.png" alt="" loading="lazy">
       </div>
     </section>
@@ -80,18 +83,18 @@
     <section class="triple">
       <h3 class="subtitle">Размер фигурок</h3>
       <div class="triple__grid">
-        <figure class="figure"><img src="assets/img/home/size-1.webp" alt="Жабка рядом с линейкой, 1 см" loading="lazy"><figcaption>Жабки помемше (1&nbsp;см)</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/size-2.jpeg" alt="Жабка рядом с линейкой, 2 см" loading="lazy"><figcaption>Жабки (2&nbsp;см)</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/size-3.jpg" alt="Жабка рядом с линейкой, 5 см" loading="lazy"><figcaption>Жабки побольше (5&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/size-1.webp" width="960" height="1280" srcset="assets/img/home/size-1.webp-preview.webp 465w, assets/img/home/size-1.webp 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 1 см" loading="lazy"><figcaption>Жабки помемше (1&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/size-2.jpeg" width="1080" height="1440" srcset="assets/img/home/size-2.jpeg-preview.webp 465w, assets/img/home/size-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 2 см" loading="lazy"><figcaption>Жабки (2&nbsp;см)</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/size-3.jpg" width="960" height="1280" srcset="assets/img/home/size-3.jpg-preview.webp 465w, assets/img/home/size-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Жабка рядом с линейкой, 5 см" loading="lazy"><figcaption>Жабки побольше (5&nbsp;см)</figcaption></figure>
       </div>
     </section>
 
     <section class="triple">
       <h3 class="subtitle">Материал</h3>
       <div class="triple__grid">
-        <figure class="figure"><img src="assets/img/home/material-1.jpeg" alt="Упаковка керамической массы" loading="lazy"><figcaption>Высокотемпературная немецкая керамическая масса</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/material-2.jpeg" alt="Палитра с образцами глазури" loading="lazy"><figcaption>Глазури для&nbsp;керамики</figcaption></figure>
-        <figure class="figure"><img src="assets/img/home/material-3.jpg" alt="Фигурка с золотом на ладони" loading="lazy"><figcaption>А&nbsp;иногда&nbsp;— настоящее золото</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/material-1.jpeg" width="1080" height="1440" srcset="assets/img/home/material-1.jpeg-preview.webp 465w, assets/img/home/material-1.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Упаковка керамической массы" loading="lazy"><figcaption>Высокотемпературная немецкая керамическая масса</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/material-2.jpeg" width="1080" height="1440" srcset="assets/img/home/material-2.jpeg-preview.webp 465w, assets/img/home/material-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Палитра с образцами глазури" loading="lazy"><figcaption>Глазури для&nbsp;керамики</figcaption></figure>
+        <figure class="figure"><img src="assets/img/home/material-3.jpg" width="960" height="1280" srcset="assets/img/home/material-3.jpg-preview.webp 465w, assets/img/home/material-3.jpg 960w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="Фигурка с золотом на ладони" loading="lazy"><figcaption>А&nbsp;иногда&nbsp;— настоящее золото</figcaption></figure>
       </div>
     </section>
 
@@ -108,15 +111,15 @@
     <!-- Фото-охота -->
     <div class="section-head" id="gallery"><h2 class="title">Фото-охота</h2></div>
     <section class="mosaic" aria-label="Фотографии жабок на природе">
-      <img class="is-tall" style="object-position:50% 100%" src="assets/img/home/gallery-1.webp" alt="" loading="lazy">
-      <img style="object-position:50% 74%" src="assets/img/home/gallery-2.jpeg" alt="" loading="lazy">
-      <img class="is-tall" style="object-position:50% 66%" src="assets/img/home/gallery-4.jpeg" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-3.jpeg" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-5.webp" alt="" loading="lazy">
-      <img class="is-tall" style="object-position:50% 25%" src="assets/img/home/gallery-7.jpeg" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-8.jpeg" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-6.webp" alt="" loading="lazy">
-      <img src="assets/img/home/gallery-9.jpeg" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 100%" src="assets/img/home/gallery-1.webp" width="1080" height="1440" srcset="assets/img/home/gallery-1.webp-preview.webp 465w, assets/img/home/gallery-1.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img style="object-position:50% 74%" src="assets/img/home/gallery-2.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-2.jpeg-preview.webp 465w, assets/img/home/gallery-2.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 66%" src="assets/img/home/gallery-4.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-4.jpeg-preview.webp 465w, assets/img/home/gallery-4.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="assets/img/home/gallery-3.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-3.jpeg-preview.webp 465w, assets/img/home/gallery-3.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="assets/img/home/gallery-5.webp" width="1280" height="960" srcset="assets/img/home/gallery-5.webp-preview.webp 620w, assets/img/home/gallery-5.webp 1280w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img class="is-tall" style="object-position:50% 25%" src="assets/img/home/gallery-7.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-7.jpeg-preview.webp 465w, assets/img/home/gallery-7.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="assets/img/home/gallery-8.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-8.jpeg-preview.webp 465w, assets/img/home/gallery-8.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="assets/img/home/gallery-6.webp" width="1080" height="1440" srcset="assets/img/home/gallery-6.webp-preview.webp 465w, assets/img/home/gallery-6.webp 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
+      <img src="assets/img/home/gallery-9.jpeg" width="1080" height="1440" srcset="assets/img/home/gallery-9.jpeg-preview.webp 465w, assets/img/home/gallery-9.jpeg 1080w" sizes="(max-width: 639px) 48vw, 34vw" decoding="async" alt="" loading="lazy">
     </section>
     <div class="btn-row mosaic-more"><a class="btn" href="gallery.html">Смотреть всю галерею</a></div>
 
@@ -130,7 +133,7 @@
         <p>Россия, Екатеринбург</p>
         <img class="contacts__sticker" src="assets/img/stickers/flower.png" alt="" loading="lazy">
       </div>
-      <img class="contacts__img" src="assets/img/home/contacts.webp" alt="Жабка за ноутбуком" loading="lazy">
+      <img class="contacts__img" src="assets/img/home/contacts.webp" width="1440" height="1003" srcset="assets/img/home/contacts.webp-preview.webp 620w, assets/img/home/contacts.webp 1440w" sizes="(max-width: 639px) 92vw, 50vw" decoding="async" alt="Жабка за ноутбуком" loading="lazy">
     </section>
   </main>
 
@@ -146,7 +149,10 @@
             video.pause();
             return;
           }
-          if (!video.hasAttribute('src')) video.src = video.dataset.src;
+          if (!video.hasAttribute('src')) {
+            video.poster = video.dataset.src.replace(/\.mp4$/, '-poster.webp');
+            video.src = video.dataset.src;
+          }
           video.play().catch(function () {});
         });
       });
