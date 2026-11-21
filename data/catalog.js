@@ -2,6 +2,7 @@
 // stock: null - без ограничения, число - сколько штук можно купить. hidden: true - товар скрыт с сайта.
 // У категорий descr — описание раздела, оно показывается в каталоге над карточками.
 window.LARION_DATA = {
+    "preorderOpen": true,
     "categories": [
         {
             "slug": "zhabagochi",

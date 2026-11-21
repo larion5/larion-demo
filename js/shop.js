@@ -92,6 +92,7 @@
     var more = document.querySelector('[data-load-more]');
     var searchEmpty = document.querySelector('[data-search-empty]');
     var stockEmpty = document.querySelector('[data-stock-empty]');
+    document.querySelector('[data-catalog-preorder]').hidden = data.preorderOpen === false;
 
     // Разделы с нарисованными иконками, как в подменю «каталог». Первым — «Все»: четыре иконки квадратиком.
     var allIcons = data.categories.slice(0, 4).map(function (c) { return '<img src="' + (c.menuIcon || c.image) + '" alt="">'; }).join('');
@@ -121,7 +122,7 @@
         (category
           ? '<a href="catalog.html">Наличие</a><span aria-hidden="true">›</span><span aria-current="page">' + category.title + '</span>'
           : '<span aria-current="page">Наличие</span>');
-      document.title = category ? category.title + ' | Larion' : 'Каталог | Larion';
+      document.title = category ? category.title + ' | larion' : 'Каталог | larion';
       // описание раздела слева над карточками (descr у категории в data/catalog.js)
       var catDescr = document.querySelector('[data-cat-descr]');
       if (catDescr) {
@@ -146,6 +147,13 @@
       window.LarionCart.refresh();
     };
 
+    function revealActiveCategory() {
+      if (cats.scrollWidth <= cats.clientWidth) return;
+      var active = cats.querySelector('.is-active').getBoundingClientRect();
+      var strip = cats.getBoundingClientRect();
+      cats.scrollLeft += active.left + active.width / 2 - (strip.left + strip.width / 2);
+    }
+
     cats.addEventListener('click', function (e) {
       var a = e.target.closest('a');
       if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -156,12 +164,14 @@
       state.shown = PER_PAGE;
       history.pushState(null, '', a.getAttribute('href'));
       draw();
+      revealActiveCategory();
       window.scrollTo({ top: 0, behavior: 'instant' });
     });
     window.addEventListener('popstate', function (e) {
       state.cat = new URLSearchParams(location.search).get('cat') || '';
       state.shown = (e.state && e.state.shown) || PER_PAGE;
       draw();
+      revealActiveCategory();
     });
     search.addEventListener('input', function () { state.q = search.value; state.shown = PER_PAGE; draw(); });
     sort.addEventListener('change', function () { state.sort = sort.value; state.shown = PER_PAGE; draw(); });
@@ -185,6 +195,7 @@
     }
     if (history.state && history.state.shown) state.shown = history.state.shown;
     draw();
+    revealActiveCategory();
   }
 
   /* Страница товара
@@ -524,7 +535,7 @@
     }
     var plainTitle = document.createElement('textarea');
     plainTitle.innerHTML = p.title;
-    document.title = plainTitle.value + ' | Larion';
+    document.title = plainTitle.value + ' | larion';
 
     var category = data.categories.filter(function (c) { return c.slug === p.category; })[0];
     var backUrl = category ? 'catalog.html?cat=' + category.slug : 'catalog.html';

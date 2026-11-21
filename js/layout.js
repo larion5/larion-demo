@@ -61,7 +61,7 @@
   var header = document.getElementById('site-header');
   header.innerHTML =
     '<header class="header">' +
-      '<a class="header__logo" href="index.html" aria-label="Larion, на главную"><img src="assets/icons/logo.svg" alt="Larion"></a>' +
+      '<a class="header__logo" href="index.html" aria-label="larion, на главную"><img src="assets/icons/logo.svg" alt="larion"></a>' +
       '<nav class="header__nav" aria-label="Основное меню">' +
         '<a href="catalog.html" data-submenu-toggle>каталог</a>' +
         navHtml +
@@ -109,7 +109,7 @@
         '</div>' +
       '</div>' +
       '<div class="footer__center">' +
-        '<img class="logo" src="assets/icons/logo.svg" alt="Larion">' +
+        '<img class="logo" src="assets/icons/logo.svg" alt="larion">' +
         '<div class="footer__copy"><img src="assets/icons/copyright.svg" alt="">larion 2026</div>' +
       '</div>' +
       '<div class="footer__legal">' +

@@ -81,11 +81,11 @@
   root.className = 'cart';
   root.setAttribute('role', 'dialog');
   root.setAttribute('aria-modal', 'true');
-  root.setAttribute('aria-label', 'Корзина');
+  root.setAttribute('aria-labelledby', 'cart-title');
   root.innerHTML =
     '<button class="cart__close" type="button" data-cart-close aria-label="Закрыть">Закрыть</button>' +
     '<div class="cart__box">' +
-      '<h2 data-cart-title>Ваш заказ:</h2>' +
+      '<h2 id="cart-title" data-cart-title>Ваш заказ:</h2>' +
       '<div data-cart-items></div>' +
       '<div class="cart__warn" data-cart-warn hidden>' +
         '<p><b>Шляпку можно надеть только на жабагочи</b> (жабку с дырочкой на голове), а её в корзине нет. Добавим?</p>' +
@@ -143,9 +143,9 @@
       '</form>' +
       '<div class="cart__note" data-demo-confirmation hidden>' +
         '<span class="cart__thanks" tabindex="-1">Спасибо! Заказ <b>№ <span data-demo-order-number></span></b> принят!</span>' +
-        '<span class="cart__mail-line">Вся информация отправлена на почту&nbsp;<span class="cart__mail-icon" aria-hidden="true">📩</span></span>' +
-        '<span class="cart__chat-text"><b>Где нам, если что, обКВАкать вопросики?</b></span>' +
-        '<span class="cart__chat-text">Нажав кнопку ниже текст с номером заказа скопируется, а вы <b>обязательно вставьте текст в диалог со мной!</b></span>' +
+        '<span class="cart__mail-line">Вся информация у вас на почте&nbsp;<span class="cart__mail-icon" aria-hidden="true">📩</span></span>' +
+        '<span class="cart__chat-text"><b>Где нам обКВАкать вопросики?</b></span>' +
+        '<span class="cart__chat-text">Нажмите кнопку → текст скопируется → отправьте текст в диалог</span>' +
         '<span class="cart__chats">' +
           '<button type="button" class="cart__chat" data-demo-way="Телеграм">телеграмм</button>' +
           '<button type="button" class="cart__chat" data-demo-way="ВКонтакте">вконтакте</button>' +
@@ -408,6 +408,7 @@
     if (items.length || !order || order.contactWay || Date.now() - order.at > 24 * 3600 * 1000) return;
     orderNumber.textContent = order.number;
     confirmation.hidden = false;
+    root.querySelector('[data-cart-title]').textContent = 'Последний шаг';
     elEmpty.hidden = true;
     orderHistory.hidden = true;
     contactPending = true;
@@ -436,7 +437,7 @@
   }
 
   function contactText(number) {
-    return 'Здравствуйте! Мой заказ № ' + number + ' был оформлен на сайте Larion';
+    return 'Здравствуйте! Мой заказ № ' + number + ' был оформлен на сайте larion';
   }
 
   root.addEventListener('click', async function (e) {
