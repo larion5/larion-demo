@@ -46,6 +46,9 @@ body { padding-top: var(--demo-bar-height, 0px) !important; }
 }
 body .cart, body .popup { top: var(--demo-bar-height, 0px); }
 body .cart { padding-top: 56px; }
+@media (max-width: 639px) {
+  body .cart { padding-inline: 16px; }
+}
 body .cart, body .popup, #site-header .drawer__panel { overscroll-behavior: contain; }
 .cart [data-cart-note] {
   margin: 0 0 12px;
@@ -98,3 +101,24 @@ body .cart, body .popup, #site-header .drawer__panel { overscroll-behavior: cont
   #site-header ~ .page { padding-top: 0; }
   #site-header ~ main .hero { padding-top: 40px; }
 }
+[data-preorder-consent][hidden] { display: none; }
+[data-demo-orders] summary { cursor: pointer; }
+[data-demo-orders-list] { list-style: none; margin: 8px 0 0; padding: 0; }
+[data-demo-orders-list] li {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  padding: 10px 0; border-top: 1px solid #dbd8d0;
+}
+[data-demo-orders-list] .cart__chats { width: 100%; flex-wrap: wrap; }
+[data-demo-orders-list] .cart__chat { flex: 1 1 155px; }
+[data-demo-orders-message] { width: 100%; }
+[data-demo-confirmation] .cart__thanks { margin-bottom: 0; }
+.cart__mail-line { display: block; }
+[data-demo-confirmation] .cart__mail-line + .cart__chat-text { margin-top: 1.4em; }
+.cart__mail-icon { font: 1.15em/1 "Segoe UI Emoji", "Apple Color Emoji", sans-serif; }
+.cart__copy-screen:not([hidden]) { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .25); }
+.cart__copy-screen p { margin: 0; padding: 24px; border-radius: var(--radius); background: var(--white); color: var(--ink); text-align: center; font-size: clamp(18px, 4vw, 23px); }
+
+[data-demo-orders-list] .cart__history-items { list-style: none; padding: 0; margin: 4px 0; width: 100%; }
+[data-demo-orders-list] .cart__history-items li { display: flex; align-items: center; gap: 10px; padding: 6px 0; border: 0; }
+.cart__history-items img { flex: none; width: 46px; height: 46px; object-fit: cover; border-radius: 8px; }
+[data-demo-orders-list] > li > small { display: block; }

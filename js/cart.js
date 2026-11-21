@@ -124,6 +124,7 @@
             '<input name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(000) 000-00-00" required></span><small class="field__hint" data-phone-hint>СДЭК пришлёт СМС с кодом, когда посылка приедет</small><small class="field__error" data-phone-error>Укажите номер из 10 цифр</small></label>' +
         '</fieldset>' +
         '<label class="field"><span>Комментарий к заказу</span><textarea name="comment" rows="2" maxlength="1000" placeholder="Например: это подарок, оберните заказ ленточкой"></textarea></label>' +
+        '<label class="consent" data-preorder-consent hidden><input name="preorderConsent" type="checkbox"><span>Я осознаю, что это ручная работа и готовое изделие будет немного отличаться от заявленной картинки</span></label>' +
         '<div class="consent"><input name="consent" type="checkbox" required aria-labelledby="consent-text"><span id="consent-text">Я даю <a href="soglasie.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> по <a href="privacy.html" target="_blank" rel="noopener">политике</a>' +
           // согласие на ПДн — отдельной галочкой и отдельным документом (152-ФЗ с 01.09.2025), оферта принимается оформлением заказа (строка под галочкой)
           '<span class="consent__offer">Оформляя заказ, вы принимаете условия <a href="oferta.html" target="_blank" rel="noopener">публичной оферты</a>.</span></span></div>' +
@@ -141,21 +142,29 @@
         '<button class="btn" type="submit">Проверить оформление — демо</button>' +
       '</form>' +
       '<div class="cart__note" data-demo-confirmation hidden>' +
-        '<span class="cart__thanks" tabindex="-1">Заказ <b>№</b> <span data-demo-order-number></span></span>' +
+        '<span class="cart__thanks" tabindex="-1">Спасибо! Заказ <b>№ <span data-demo-order-number></span></b> принят!</span>' +
+        '<span class="cart__mail-line">Вся информация отправлена на почту&nbsp;<span class="cart__mail-icon" aria-hidden="true">📩</span></span>' +
         '<span class="cart__chat-text"><b>Где нам, если что, обКВАкать вопросики?</b></span>' +
+        '<span class="cart__chat-text">Нажав кнопку ниже текст с номером заказа скопируется, а вы <b>обязательно вставьте текст в диалог со мной!</b></span>' +
         '<span class="cart__chats">' +
           '<button type="button" class="cart__chat" data-demo-way="Телеграм">телеграмм</button>' +
           '<button type="button" class="cart__chat" data-demo-way="ВКонтакте">вконтакте</button>' +
         '</span>' +
-        '<span class="cart__chat-text">Текст автоматически скопируется, а вы вставьте его в мессенджер. Заказ принят и оплачен, все ок!</span>' +
-        '<small class="cart__chat-copied">Демо · оплата условная, сообщения не отправляются.</small>' +
+        '<small class="cart__chat-copied">Демо · письма и заказы не отправляются.</small>' +
         '<span class="cart__chat-copied" role="status" hidden></span>' +
         '<textarea data-demo-message aria-label="Сообщение с номером заказа" rows="3" readonly hidden></textarea>' +
       '</div>' +
-    '</div>';
+      '<details class="cart__note" data-demo-orders hidden><summary><b>Мои заказы</b></summary>' +
+        '<small>История хранится в этом браузере 30 дней.</small><ol data-demo-orders-list></ol>' +
+        '<p role="status" data-demo-orders-status hidden></p>' +
+        '<textarea aria-label="Сообщение с номером заказа" data-demo-orders-message rows="3" readonly hidden></textarea>' +
+      '</details>' +
+    '</div>' +
+    '<div class="cart__copy-screen" data-cart-copy-screen hidden><p role="status"></p></div>';
   document.body.appendChild(root);
   var closeButton = root.querySelector('[data-cart-close]');
   var contactPending = false;
+  var contactInProgress = false;
 
   // Отмена: 5 секунд после удаления товара (крестиком или минусом до нуля) его можно вернуть.
   // Предупреждение стоит на месте товара, у каждого товара свой таймер.
@@ -209,11 +218,15 @@
   var note = root.querySelector('[data-cart-note]');
   var confirmation = root.querySelector('[data-demo-confirmation]');
   var orderNumber = confirmation.querySelector('[data-demo-order-number]');
+  var orderHistory = root.querySelector('[data-demo-orders]');
+  var checkoutTotal;
   var contactUrls = {
     'Телеграм': 'https://t.me/larionart5?direct',
     'ВКонтакте': 'https://vk.me/larionartist'
   };
   var doneKey = 'larion_demo_last_order';
+  var historyKey = 'larion_demo_order_history';
+  var orderRetention = 30 * 24 * 60 * 60 * 1000;
   var warn = root.querySelector('[data-cart-warn]');
   var tip = root.querySelector('[data-cart-tip]');
   var WARNING_KEY = 'larion_demo_cart_warning_choices';
@@ -221,6 +234,22 @@
   try { warningChoices = JSON.parse(sessionStorage.getItem(WARNING_KEY)) || warningChoices; } catch (err) {}
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) {} }
+  function readOrders() {
+    var orders = [];
+    var stored = storeGet(historyKey);
+    try {
+      var saved = JSON.parse(stored);
+      if (Array.isArray(saved)) orders = saved;
+      var legacy = JSON.parse(storeGet(doneKey));
+      if (legacy && !orders.some(function (order) { return order && order.number === legacy.number; })) orders.unshift(legacy);
+    } catch (err) {}
+    var cutoff = Date.now() - orderRetention;
+    var recent = orders.filter(function (order) { return order && typeof order.number === 'string' && order.at >= cutoff; });
+    var updated = recent.length ? JSON.stringify(recent) : null;
+    if (updated !== stored) storeSet(historyKey, updated);
+    if (storeGet(doneKey)) storeSet(doneKey, '');
+    return recent;
+  }
   function saveWarningChoices() {
     try { sessionStorage.setItem(WARNING_KEY, JSON.stringify(warningChoices)); } catch (err) {}
   }
@@ -318,7 +347,11 @@
     var other = shipWay() === 'other';
     // в корзине только сертификаты — доставки нет, они приходят на почту
     var noShip = onlyGifts(items);
-    root.querySelector('[data-ship-later]').hidden = !hasPreorder(items);
+    var includesPreorder = hasPreorder(items);
+    root.querySelector('[data-ship-later]').hidden = !includesPreorder;
+    root.querySelector('[data-preorder-consent]').hidden = !includesPreorder;
+    form.elements.preorderConsent.required = includesPreorder;
+    if (!includesPreorder) form.elements.preorderConsent.checked = false;
     root.querySelector('[data-ship-gift]').hidden = !noShip;
     root.querySelector('[data-ship]').hidden = noShip;
     root.querySelector('[data-delivery]').hidden = other || noShip;
@@ -327,7 +360,7 @@
     // сертификатом оплачиваются товары (кроме самих сертификатов) и доставка
     var giftSum = items.reduce(function (s, i) { return s + (/^gift:/.test(i.id) ? i.qty * productOf(i).price : 0); }, 0);
     var certOff = cert ? Math.min(cert.balance, total - giftSum + (dPrice || 0)) : 0;
-    var checkoutTotal = total + (dPrice || 0) - certOff;
+    checkoutTotal = total + (dPrice || 0) - certOff;
     drawCert(certOff);
     root.querySelector('[data-cart-lines]').innerHTML =
       '<div><span>Товары</span><span>' + money(total) + '</span></div>' +
@@ -336,7 +369,7 @@
     root.querySelector('[data-cart-total]').textContent = money(checkoutTotal);
     lastGoods = items.map(function (i) { return { id: i.id, qty: i.qty }; });
 
-    showLastDemoOrder(items);
+    showOrders(items);
     // Кнопки покупки: когда в корзине весь остаток, добавить ещё нельзя.
     document.querySelectorAll('[data-add]').forEach(function (btn) {
       if (btn.getAttribute('data-flash')) return;
@@ -350,19 +383,35 @@
     window.dispatchEvent(new Event('larion-cart-change'));
   }
 
-  function showLastDemoOrder(items) {
+  function showOrders(items) {
     confirmation.hidden = true;
     contactPending = false;
     closeButton.hidden = false;
-    if (items.length) return;
-    var order;
-    try { order = JSON.parse(storeGet(doneKey)); } catch (err) { return; }
-    if (!order || Date.now() - order.at > 24 * 3600 * 1000) return;
+    var orders = readOrders();
+    orderHistory.hidden = !orders.length;
+    orderHistory.querySelector('[data-demo-orders-list]').innerHTML = orders.map(function (order) {
+      var number = esc(order.number);
+      var date = new Date(order.at).toLocaleDateString('ru-RU');
+      return '<li data-order-number="' + number + '"><b>Заказ № ' + number + '</b> <small>' + date + '</small>' +
+        (Array.isArray(order.items) ?
+          '<ul class="cart__history-items">' + order.items.map(function (item) {
+            return '<li><img src="' + esc(item.image) + '" alt="" loading="lazy"><div>' +
+              titleHtml(esc(item.title)) + '<div>' + Number(item.qty) + ' шт. · ' + money(Number(item.sum)) + '</div></div></li>';
+          }).join('') + '</ul><div><b>Итого: ' + money(order.total) + '</b></div>' :
+          '<small>Состав этого заказа не сохранился.</small>') +
+        '<span class="cart__chats">' +
+          '<button type="button" class="cart__chat" data-demo-way="Телеграм">Написать в телеграмм</button>' +
+          '<button type="button" class="cart__chat" data-demo-way="ВКонтакте">Написать во ВКонтакте</button>' +
+        '</span></li>';
+    }).join('');
+    var order = orders[0];
+    if (items.length || !order || order.contactWay || Date.now() - order.at > 24 * 3600 * 1000) return;
     orderNumber.textContent = order.number;
     confirmation.hidden = false;
     elEmpty.hidden = true;
-    contactPending = !order.contactWay;
-    closeButton.hidden = contactPending;
+    orderHistory.hidden = true;
+    contactPending = true;
+    closeButton.hidden = true;
   }
 
   function copyContactText(text) {
@@ -371,7 +420,7 @@
       field.value = text;
       field.readOnly = true;
       field.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
-      confirmation.appendChild(field);
+      root.appendChild(field);
       field.select();
       field.setSelectionRange(0, text.length);
       try { return document.execCommand('copy'); }
@@ -386,46 +435,60 @@
     return Promise.resolve(fallback());
   }
 
-  confirmation.addEventListener('click', async function (e) {
+  function contactText(number) {
+    return 'Здравствуйте! Мой заказ № ' + number + ' был оформлен на сайте Larion';
+  }
+
+  root.addEventListener('click', async function (e) {
     var button = e.target.closest('[data-demo-way]');
-    if (!button) return;
-    var number = orderNumber.textContent;
-    var text = 'Здравствуйте! Мой заказ № ' + number + ' был оформлен на сайте Larion';
-    var buttons = confirmation.querySelectorAll('[data-demo-way]');
+    if (!button || contactInProgress) return;
+    var row = button.closest('[data-order-number]');
+    var number = row ? row.dataset.orderNumber : orderNumber.textContent;
+    var panel = row ? orderHistory : confirmation;
+    var way = button.dataset.demoWay;
+    var text = contactText(number);
+    var buttons = panel.querySelectorAll('[data-demo-way]');
+    contactInProgress = true;
     buttons.forEach(function (el) { el.disabled = true; });
-    var pendingCopy = copyContactText(text);
-    window.open(contactUrls[button.dataset.demoWay], '_blank', 'noopener,noreferrer');
-    var copied = await pendingCopy;
-    buttons.forEach(function (el) {
-      el.disabled = false;
-      el.classList.toggle('is-picked', el === button);
-    });
-    var status = confirmation.querySelector('[role="status"]');
-    status.textContent = copied ? 'Сообщение скопировано.' : 'Скопируйте сообщение из поля ниже.';
-    status.hidden = false;
-    try {
-      var order = JSON.parse(storeGet(doneKey));
-      if (order && order.number === number) {
-        order.contactWay = button.dataset.demoWay;
-        storeSet(doneKey, JSON.stringify(order));
-      }
-    } catch (err) {}
-    contactPending = false;
-    closeButton.hidden = false;
-    var message = confirmation.querySelector('[data-demo-message]');
-    message.hidden = copied;
-    if (copied) {
-      close();
-      window.LarionSay('Сообщение с номером заказа скопировано.');
-    } else {
+    var copied = await copyContactText(text);
+    if (!copied) {
+      contactInProgress = false;
+      buttons.forEach(function (el) { el.disabled = false; });
+      var status = panel.querySelector('[role="status"]');
+      var message = panel.querySelector('textarea[readonly]');
+      status.textContent = 'Скопируйте сообщение из поля ниже.';
+      status.hidden = false;
+      message.hidden = false;
       message.value = text;
       message.focus();
       message.select();
+      return;
     }
+    try {
+      var orders = readOrders();
+      var order = orders.find(function (item) { return item.number === number; });
+      if (order) {
+        order.contactWay = way;
+        storeSet(historyKey, JSON.stringify(orders));
+      }
+    } catch (err) {}
+    var screen = root.querySelector('[data-cart-copy-screen]');
+    screen.hidden = false;
+    screen.querySelector('[role="status"]').textContent = 'Текст с номером заказа скопирован';
+    setTimeout(function () {
+      screen.hidden = true;
+      buttons.forEach(function (el) { el.disabled = false; });
+      contactInProgress = false;
+      contactPending = false;
+      closeButton.hidden = false;
+      close();
+      location.assign(contactUrls[way]);
+    }, 2000);
   });
 
   var lastFocus;
   function open() {
+    orderHistory.open = false;
     lastFocus = document.activeElement;
     note.hidden = true;
     render();
@@ -434,7 +497,7 @@
     (contactPending ? confirmation.querySelector('.cart__thanks') : closeButton).focus();
   }
   function close() {
-    if (contactPending) return;
+    if (contactPending || contactInProgress) return;
     clearAllUndo();
     root.classList.remove('is-open');
     document.body.classList.remove('is-locked');
@@ -600,7 +663,14 @@
     }
     if (!window.LarionDemo.finish(form, root)) return;
     var at = Date.now();
-    storeSet(doneKey, JSON.stringify({ number: 'DEMO-' + String(at).slice(-6), at: at }));
+    var number = 'DEMO-' + crypto.getRandomValues(new Uint32Array(1))[0].toString(16).toUpperCase().padStart(8, '0');
+    var orders = readOrders();
+    var orderItems = read().map(function (item) {
+      var product = productOf(item);
+      return { title: item.custom ? item.custom.title : product.title, image: product.images[0] || '', qty: item.qty, sum: item.qty * product.price };
+    });
+    orders.unshift({ number: number, at: at, items: orderItems, total: checkoutTotal });
+    storeSet(historyKey, JSON.stringify(orders));
     storeSet(KEY, null);
     storeSet(CERT_KEY, null);
     window.LarionDemo.memory.removeItem(FORM_KEY);

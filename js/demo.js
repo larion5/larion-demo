@@ -20,6 +20,7 @@
   if(!items.length)error='Добавьте товар для проверки оформления.';
   else if(!form.elements.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))error='Укажите почту или нажмите «Заполнить пример заказа».';
   else if(!form.elements.consent.checked)error='Отметьте галочку согласия и снова нажмите «Проверить оформление».';
+  else if(form.elements.preorderConsent.required&&!form.elements.preorderConsent.checked)error='Подтвердите, что изделие ручной работы может немного отличаться от фото.';
   var ship=root.querySelector('[data-ship]');
   if(!error&&ship&&!ship.hidden){
    var phone=form.elements.phone;

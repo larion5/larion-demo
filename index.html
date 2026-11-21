@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="ru">
-<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile6"><script src="js/demo.js?v=mobile6"></script>
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout5"><script src="js/demo.js?v=orders1"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#31382c">
   <title>Larion | Керамические жабки</title>
   <meta name="description" content="Керамические жабки размером с раффаэллку, а ещё с попами и шляпками. Декоративные интерьерные статуэтки ручной работы.">
-  <link rel="stylesheet" href="css/style.css?v=swamp-tap">
+  <link rel="stylesheet" href="css/style.css?v=checkout4">
   <link rel="preload" as="image" href="assets/img/swamp/moss-bright.webp">
   <link rel="preload" as="image" href="assets/img/swamp/moss-olive.webp">
   <link rel="preload" as="image" href="assets/img/swamp/moss-lime.webp">
@@ -16,14 +16,31 @@
   <script defer src="data/constructor.js"></script>
   <script defer src="data/photo-focus.js"></script>
   <script defer src="js/focus.js"></script>
-  <script defer src="js/layout.js?v=mobile3"></script>
+  <script defer src="js/layout.js?v=checkout2"></script>
   <script defer src="js/swamp.js?v=touch-area1"></script>
-  <script defer src="js/lightbox.js?v=mobile6"></script>
-  <script defer src="js/cart.js?v=warnings1"></script>
-  <script defer src="js/shop.js?v=mobile5"></script>
+  <script defer src="js/lightbox.js?v=orders1"></script>
+  <script defer src="js/cart.js?v=checkout5"></script>
+  <script defer src="js/shop.js?v=orders1"></script>
   <script defer src="js/builder-teaser.js?v=mobile3"></script>
 </head>
 <body class="home-page">
+  <div id="page-loading" role="status" hidden>Сайт загружается…</div>
+  <style>
+    #page-loading:not([hidden]) { position: fixed; z-index: 9999; inset: auto 16px 16px auto; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 12px; background: #31382c; color: white; font: 15px/1.5 system-ui, sans-serif; }
+  </style>
+  <script>
+    (function () {
+      var status = document.getElementById('page-loading');
+      var timer = setTimeout(function () { status.hidden = false; }, 650);
+      var slow = setTimeout(function () { status.textContent = 'Сайт всё ещё загружается…'; }, 8000);
+      window.addEventListener('load', function () {
+        clearTimeout(timer);
+        clearTimeout(slow);
+        status.hidden = true;
+      }, { once: true });
+    })();
+  </script>
+
   <div id="site-header"></div>
 
   <main>
@@ -59,13 +76,13 @@
     <!-- Предзаказ -->    <section class="preorder" id="preorder">
       <div class="preorder__photo">
         <img class="preorder__img" src="assets/img/home/preorder-original.webp" width="1920" height="2560" decoding="async" alt="Голубая жабка на мху" loading="lazy" fetchpriority="low">
-        <img class="preorder__sticker" src="assets/img/stickers/preorder.png" alt="" loading="lazy">
       </div>
       <div class="preorder__text">
         <h2 class="title">Предзаказ</h2>
         <p>Нет нужной жабки в&nbsp;наличии? Оформите предзаказ! Выберите дизайн, окрас и&nbsp;мордочку жабки из&nbsp;каталога предзаказа</p>
         <a class="btn" href="preorder.html">Собрать свою жабку</a>
       </div>
+      <img class="preorder__sticker" src="assets/img/stickers/preorder.png" alt="" loading="lazy">
     </section>
 
     <!-- Обо мне -->
@@ -156,20 +173,12 @@
         video.defaultMuted = video.muted = true;
         video.preload = 'auto';
         video.src = mobile.matches ? src.replace(/\.mp4$/, '-quick.mp4') : src;
+        video.load();
       }
       function play(video) {
         prepare(video);
         video.play().catch(function () {});
       }
-      function preloadNearViewport(entries, observer) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          prepare(entry.target);
-          observer.unobserve(entry.target);
-        });
-      }
-      var preload = new IntersectionObserver(preloadNearViewport, { rootMargin: mobile.matches ? '1000px 0px' : '680px 0px' });
-      var preloadLater = new IntersectionObserver(preloadNearViewport, { rootMargin: '200px 0px' });
       var playback = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
           var video = entry.target;
@@ -181,11 +190,11 @@
           play(video);
         });
       });
-      videos.forEach(function (video, index) {
+      videos.forEach(function (video) {
         video.addEventListener('canplay', function () {
           if (video.autoplay && video.paused) play(video);
         });
-        (mobile.matches && index >= 2 ? preloadLater : preload).observe(video);
+        prepare(video);
         playback.observe(video);
       });
       document.addEventListener('DOMContentLoaded', function () {

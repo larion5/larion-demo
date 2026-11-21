@@ -183,7 +183,9 @@ h1, h2, h3, p { margin: 0; }
 .drawer__panel {
   position: absolute; top: 0; right: 0; bottom: 0;
   width: min(300px, 85vw);
-  padding: 76px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px 24px;
   border-radius: var(--radius) 0 0 var(--radius);
   overflow-y: auto;
   background: var(--olive);
@@ -195,6 +197,8 @@ h1, h2, h3, p { margin: 0; }
 .drawer__close::before, .drawer__close::after { content: ''; position: absolute; left: 3px; right: 3px; top: 13px; height: 1.5px; background: var(--ink); }
 .drawer__close::before { transform: rotate(45deg); }
 .drawer__close::after { transform: rotate(-45deg); }
+.drawer__title { margin: 0 34px 24px 0; font-size: 22px; }
+.drawer__sticker { align-self: flex-end; width: 66px; height: auto; margin-top: auto; padding-top: 24px; }
 .drawer__nav { display: flex; flex-direction: column; gap: 14px; font-size: 16px; }
 .drawer__nav .nav-toggle { text-align: left; font-size: 16px; }
 .drawer__sub { display: none; flex-direction: column; gap: 10px; padding: 4px 0 4px 14px; font-size: 14px; }
@@ -273,11 +277,11 @@ h1, h2, h3, p { margin: 0; }
   padding: var(--section-gap) var(--gutter) 0;
 }
 .preorder__img { width: 100%; height: auto; aspect-ratio: 950 / 890; object-fit: cover; border-radius: var(--radius); }
-.preorder__text { display: flex; flex-direction: column; gap: 40px; max-width: 588px; }
+.preorder__text { position: relative; padding-bottom: clamp(48px, 7vw, 105px); display: flex; flex-direction: column; gap: 40px; max-width: 588px; }
 .preorder__text .title { text-align: left; }
 .preorder__text .btn { min-height: 70px; font-weight: 900; }
 .preorder__photo { position: relative; }
-.preorder__sticker { position: absolute; right: 4%; bottom: 4%; width: clamp(32px, 14px + 6vw, 100px); height: auto; }
+#preorder > .preorder__sticker { position: absolute; right: 22px; bottom: 0; width: clamp(38px, 6vw, 86px); height: auto; }
 
 /* Блок конструктора на главной */
 .teaser { position: relative; display: block; width: 100%; aspect-ratio: 1240 / 970; overflow: hidden; border-radius: var(--radius); background: #c8c8c6 url('../assets/img/constructor/stage-bg.webp') center / cover no-repeat; transition: transform .3s ease; }
@@ -380,7 +384,7 @@ h1, h2, h3, p { margin: 0; }
 .about__text strong { font-weight: 700; }
 .about__img { width: 100%; height: auto; aspect-ratio: 890 / 900; object-fit: cover; border-radius: var(--radius); }
 .about__photo { position: relative; }
-.about__sticker { position: absolute; left: clamp(-44px, -2.3vw, -12px); bottom: clamp(-28px, -1.45vw, -8px); width: clamp(32px, 14px + 6vw, 100px); height: auto; }
+.about__sticker { position: absolute; right: -4px; bottom: -5px; width: clamp(39px, 5vw, 75px); height: auto; }
 
 .triple { padding: 72px var(--gutter) 0; }
 .triple > .subtitle { margin-bottom: 40px; }
@@ -473,10 +477,10 @@ h1, h2, h3, p { margin: 0; }
 }
 @media (max-width: 639px) {
   .section-head { padding-bottom: 28px; }
+  #preorder > .preorder__sticker, .home-page .about__sticker { display: none; }
+  #preorder > .preorder__text { padding-bottom: 0; }
   .section-head--sticker { gap: 14px; align-items: center; }
   .home-page .section-head--sticker > img,
-  .home-page .preorder__sticker,
-  .home-page .about__sticker,
   .home-page .contacts__sticker { display: none; }
   .hero { padding-top: calc(var(--header-h) + 40px); gap: 24px; }
   .hero__text .btn { width: 100%; min-height: 60px; }

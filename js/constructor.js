@@ -38,15 +38,21 @@
     return p && p.stock !== 0;
   }
 
+  function withEmptyChoice(layers) {
+    var available = layers.filter(inStock);
+    available.splice(Math.ceil(available.length / 2), 0, null);
+    return available;
+  }
+
   var LISTS = {
-    hat: layers.hats.filter(inStock).concat([null]),
+    hat: withEmptyChoice(layers.hats),
     frog: layers.frogs.filter(inStock),
-    mat: layers.mats.filter(inStock).concat([null])
+    mat: withEmptyChoice(layers.mats)
   };
 
   var root = document.querySelector('[data-constructor]');
-  if (!LISTS.frog.length) {
-    root.innerHTML = '<p class="empty">Сейчас все жабагочи разобрали. Загляните позже!</p>';
+  if (!LISTS.frog.length || new URLSearchParams(location.search).get('preview') === 'empty') {
+    root.replaceWith(document.querySelector('#builder-empty').content.cloneNode(true));
     return;
   }
 

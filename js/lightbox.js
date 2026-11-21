@@ -12,7 +12,7 @@
   box.hidden = true;
   box.innerHTML =
     '<img class="lightbox__img" alt="">' +
-    '<video class="lightbox__img lightbox__video" controls playsinline loop hidden></video>' +
+    '<video class="lightbox__img lightbox__video" controls muted playsinline loop hidden></video>' +
     '<button class="lightbox__close" type="button" aria-label="Закрыть"></button>' +
     '<button class="arrow arrow--prev lightbox__prev" type="button" aria-label="Предыдущее фото"></button>' +
     '<button class="arrow lightbox__next" type="button" aria-label="Следующее фото"></button>' +
@@ -102,6 +102,7 @@
     if (!photo) {
       img.hidden = true;
       video.hidden = false;
+      video.muted = true;
       video.poster = list[index].replace(/\.mp4$/i, '-poster.webp');
       video.src = list[index];
       var pl = video.play();

@@ -1,14 +1,31 @@
 <!doctype html>
 <html lang="ru">
-<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=mobile6"><script src="js/demo.js?v=mobile6"></script>
+<head><meta name="robots" content="noindex,nofollow"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'"><link rel="stylesheet" href="css/demo.css?v=checkout5"><script src="js/demo.js?v=orders1"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#31382c">
   <title>Предзаказ жабки | Larion</title>
   <meta name="description" content="Выберите позу, мордочку и окрас по фото — Лера слепит жабку вручную.">
-  <link rel="stylesheet" href="css/style.css?v=mobile5">
+  <link rel="stylesheet" href="css/style.css?v=checkout2">
   <link rel="stylesheet" href="css/preorder.css?v=availability2">
 </head>
 <body data-preorder-status="open" data-page-script="js/preorder.js?v=mobile3">
+  <div id="page-loading" role="status" hidden>Сайт загружается…</div>
+  <style>
+    #page-loading:not([hidden]) { position: fixed; z-index: 9999; inset: auto 16px 16px auto; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 12px; background: #31382c; color: white; font: 15px/1.5 system-ui, sans-serif; }
+  </style>
+  <script>
+    (function () {
+      var status = document.getElementById('page-loading');
+      var timer = setTimeout(function () { status.hidden = false; }, 650);
+      var slow = setTimeout(function () { status.textContent = 'Сайт всё ещё загружается…'; }, 8000);
+      window.addEventListener('load', function () {
+        clearTimeout(timer);
+        clearTimeout(slow);
+        status.hidden = true;
+      }, { once: true });
+    })();
+  </script>
+
   <div id="site-header"></div>
 
   <main class="page">
@@ -88,8 +105,8 @@
 
   <script src="data/catalog.js?v=mobile5"></script>
   <script src="data/preorder.js"></script>
-  <script src="js/layout.js?v=mobile3"></script>
-  <script src="js/lightbox.js?v=mobile5"></script>
-  <script src="js/sheet.js?v=warnings1"></script>
+  <script src="js/layout.js?v=checkout2"></script>
+  <script src="js/lightbox.js?v=orders1"></script>
+  <script src="js/sheet.js?v=checkout5"></script>
 </body>
 </html>

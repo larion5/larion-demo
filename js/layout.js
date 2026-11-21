@@ -78,8 +78,9 @@
     '</div></header>' +
     '<div class="drawer" data-drawer>' +
       '<div class="drawer__shade" data-drawer-close></div>' +
-      '<div class="drawer__panel" role="dialog" aria-label="Меню">' +
+      '<div class="drawer__panel" role="dialog" aria-labelledby="drawer-title">' +
         '<button class="drawer__close" type="button" data-drawer-close aria-label="Закрыть">Закрыть</button>' +
+        '<h2 class="drawer__title" id="drawer-title">Меню</h2>' +
         '<nav class="drawer__nav">' +
           '<button class="nav-toggle" type="button" data-drawer-sub aria-expanded="false">каталог</button>' +
           '<div class="drawer__sub" data-drawer-subpanel>' +
@@ -89,6 +90,7 @@
           '</div>' +
           navHtml +
         '</nav>' +
+        '<img class="drawer__sticker" src="assets/img/stickers/flower.png" alt="" loading="lazy">' +
       '</div>' +
     '</div>';
 

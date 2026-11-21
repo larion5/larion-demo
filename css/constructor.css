@@ -85,3 +85,20 @@
   .set__total { font-size: 17px; }
   .set__total .price { font-size: 19px; }
 }
+.builder-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: clamp(16px, 4vw, 48px);
+  max-width: 780px;
+  margin: 0 auto;
+  padding: clamp(32px, 4vw, 64px) var(--gutter) 16px;
+}
+.builder-empty img { width: 100%; height: auto; border-radius: var(--radius); }
+.builder-empty h2 { text-align: left; }
+.builder-empty p { margin: 8px 0 20px; }
+@media (max-width: 639px) {
+  .builder-empty { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .builder-empty img { width: min(55vw, 240px); }
+  .builder-empty h2 { text-align: center; }
+}

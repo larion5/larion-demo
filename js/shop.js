@@ -421,6 +421,7 @@
       main.hidden = vid;
       video.hidden = !vid;
       if (vid) {
+        video.muted = true;
         if (video.getAttribute('src') !== src) {
           video.poster = src.replace(/\.mp4$/i, '-poster.webp');
           video.src = src;
